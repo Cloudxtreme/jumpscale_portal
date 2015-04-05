@@ -61,11 +61,11 @@ class PortalServer:
         self.started = False
         self.epoch = time.time()
 
-        self.cfg = self.hrd.getDictFromPrefix('param.cfg')
+        self.cfg = self.hrd.getDictFromPrefix('instance.param.cfg')
 
         j.core.portal.active=self
 
-        self.osis = j.clients.osis.getByInstance(self.hrd.get('jp.instance', 'main'))
+        self.osis = j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
 
         self.watchedspaces = []
         self.pageKey2doc = {}
