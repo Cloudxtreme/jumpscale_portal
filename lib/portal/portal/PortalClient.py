@@ -108,19 +108,7 @@ class PortalClient():
         j.core.specparser.parseSpecs(destinationdir, appname=appname, actorname=actorname)
 
         classs = j.core.codegenerator.getClassActorRemote(appname, actorname, instance=instance, redis=redis, wsclient=self.wsclient, codepath=codepath)
-
         actorobject = classs()
-
-        modelNames = j.core.specparser.getModelNames(appname, actorname)
-        j.core.codegenerator.setTarget('client')
-
-        if len(modelNames) > 0:
-            actorobject.models = ModelsClass()
-
-            for modelName in modelNames:
-                classs = j.core.codegenerator.getClassJSModel(appname, actorname, modelName)
-                actorobject.models.__dict__[modelName] = j.core.osismodel.getNoDB(appname, actorname, modelName, classs)
-
         self._actormap[key] = actorobject
 
         apphook = getattr(self.actors, appname, None)

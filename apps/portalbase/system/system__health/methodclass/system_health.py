@@ -8,9 +8,9 @@ class system_health(j.code.classGetBase()):
     """
 
     def __init__(self):
-        self.scl = j.clients.osis.getNamespace('system', j.core.portal.active.osis)
+        ros = j.clients.ros.get()
+        self.scl = ros.system
         self.acl = j.clients.agentcontroller.get()
-
 
     def run(self, nid=None, **kwargs):
         if nid:

@@ -4,7 +4,8 @@ def main(j, args, params, tags, tasklet):
 
     params.result = page = args.page
     reload = 'noreload' not in args.tags.labels
-    scl = j.clients.osis.getNamespace('system')
+    ros = j.clients.ros.get()
+    scl = ros.system
 
     popup = Popup(id='user_create', header='Create User', submit_url='/restmachine/system/usermanager/create', reload_on_success=reload)
 

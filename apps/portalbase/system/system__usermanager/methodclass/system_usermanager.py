@@ -14,9 +14,9 @@ class system_usermanager(j.code.classGetBase()):
         self._te = {}
         self.actorname = "usermanager"
         self.appname = "system"
-        self.osiscl = j.core.portal.active.osis
-        self.modelUser = j.clients.osis.getCategory(self.osiscl, 'system', 'user')
-        self.modelGroup = j.clients.osis.getCategory(self.osiscl, 'system', 'group')
+        self.ros = j.clients.ros.get()
+        self.modelUser = self.ros.system.user
+        self.modelGroup = self.ros.system.group
 
     def authenticate(self, name, secret, **kwargs):
         """

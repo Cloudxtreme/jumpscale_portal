@@ -86,8 +86,8 @@ class system_oauth(j.code.classGetBase()):
         username = userinfo['login']
         email = userinfo['email']
 
-        osis = j.clients.osis.getByInstance('main')
-        user = j.clients.osis.getCategory(osis,"system","user")
+        ros = j.clients.ros.get()
+        user = ros.system.user
         users = user.search({'id':username})[1:]
 
         if not users:

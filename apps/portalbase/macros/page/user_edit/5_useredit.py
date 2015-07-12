@@ -4,7 +4,8 @@ def main(j, args, params, tags, tasklet):
 
     params.result = page = args.page
     userguid = args.getTag('guid')
-    scl = j.clients.osis.getNamespace('system')
+    ros = j.clients.ros.get()
+    scl = ros.system
     user = scl.user.get(userguid)
 
     popup = Popup(id='user_edit', header='Change User', submit_url='/restmachine/system/usermanager/editUser')

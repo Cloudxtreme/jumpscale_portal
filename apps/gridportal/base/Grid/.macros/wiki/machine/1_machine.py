@@ -1,6 +1,8 @@
 import datetime
 
 def main(j, args, params, tags, tasklet):
+    ros = j.clients.ros.get()
+    machinecl = ros.system.machine
     id = args.getTag('id')
     gid = args.getTag('gid')
     if not id:
@@ -8,7 +10,7 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    machine = j.core.portal.active.osis.get('system', 'machine', "%s_%s" % (gid, id))
+    machine = machinecl.get("%s_%s" % (gid, id))
     if not machine:
         params.result = ('Machine with id %s not found' % id, args.doc)
         return params

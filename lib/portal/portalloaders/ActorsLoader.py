@@ -71,7 +71,7 @@ class ActorsLoader(LoaderBase):
         LoaderBase.__init__(self, "actor", ActorLoader)
         self.actorIdToActorLoader = self.id2object
         self.getActorLoaderFromId = self.getLoaderFromId
-        self.osiscl = None
+        self.roscl = None
 
     def reset(self):
         j.apps = GroupAppsClass(self)
@@ -139,7 +139,7 @@ class ActorsLoader(LoaderBase):
         return super(ActorsLoader, self).scan(paths, reset)
 
     def loadOsisTasklets(self, actorobject, actorpath, modelname):
-        path = j.system.fs.joinPaths(actorpath, "osis", modelname)
+        path = j.system.fs.joinPaths(actorpath, "ros", modelname)
         if j.system.fs.exists(path):
             for method in ["set", "get", "delete", "list", "find", "datatables"]:
                 path2 = j.system.fs.joinPaths(path, "method_%s" % method)
@@ -149,7 +149,7 @@ class ActorLoader(LoaderBaseObject):
 
     def __init__(self):
         LoaderBaseObject.__init__(self, "actor")
-        self.osiscl = None
+        self.roscl = None
 
     def createDefaults(self, path):
         base = j.system.fs.joinPaths(j.core.portalloader.getTemplatesPath(), "%s" % self.type)
@@ -235,7 +235,7 @@ class ActorLoader(LoaderBaseObject):
                 # will generate the tasklets
                 modelHasTasklets = modeltags.labelExists("tasklets")
                 if modelHasTasklets:
-                    j.core.codegenerator.generate(modelspec, "osis", codepath=actorpath, returnClass=False, args=args)
+                    j.core.codegenerator.generate(modelspec, "ros", codepath=actorpath, returnClass=False, args=args)
 
                 if spec.hasTasklets:
                     self.loadOsisTasklets(actorobject, actorpath, modelname=modelspec.name)
@@ -246,44 +246,6 @@ class ActorLoader(LoaderBaseObject):
                 index = j.core.tags.getObject(modelspec.tags).labelExists("index")
                 tags = j.core.tags.getObject(modelspec.tags)
 
-                db = j.db.keyvaluestore.getMemoryStore()
-                osis = False
-                if tags.tagExists("dbtype"):
-                    dbtypes = [item.lower() for item in tags.tagGet("dbtype").split(",")]
-                    if "arakoon" in dbtypes:
-                        if dbtypes.index("arakoon") == 0:
-                            db = j.db.keyvaluestore.getArakoonStore(modelName)
-                    if "fs" in dbtypes:
-                        if dbtypes.index("fs") == 0:
-                            db = j.db.keyvaluestore.getFileSystemStore(namespace=modelName, serializers=[j.db.serializers.getSerializerType('j')])
-                    if "redis" in dbtypes:
-                        if dbtypes.index("redis") == 0:
-                            db = j.db.keyvaluestore.getRedisStore(namespace=modelName, serializers=[j.db.serializers.getSerializerType('j')])
-                    if "osis" in dbtypes:
-                        osis = True
-
-                if osis:
-                    # We need to check if the correct namespace is existing and
-                    # the namespace maps to the actor name, every object is a
-                    # category
-                    namespacename = actorname
-                    if not self.osiscl:
-                        import JumpScale.grid.osis
-                        self.osiscl = j.clients.osis.getByInstance('main')
-                    if actorname not in self.osiscl.listNamespaces():
-                        template = tags.tagGet('osis_template', 'modelobjects')
-                        self.osiscl.createNamespace(actorname, template=template)
-                    if modelName not in self.osiscl.listNamespaceCategories(namespacename):
-                        self.osiscl.createNamespaceCategory(namespacename, modelName)
-                try:
-                    if not osis:
-                        actorobject.models.__dict__[modelName] = j.core.osismodel.get(appname, actorname, modelName, classs, db, index)
-                    else:
-                        actorobject.models.__dict__[modelName] = j.core.osismodel.getRemoteOsisDB(appname, actorname, modelName, classs)
-                except Exception as e:
-                    raise
-                    msg = "Could not get osis model for %s_%s_%s.Error was %s." % (appname, actorname, modelName, e)
-                    raise RuntimeError(msg)
         # add routes to webserver
         for methodspec in spec.methods:
             # make sure tasklets are loaded

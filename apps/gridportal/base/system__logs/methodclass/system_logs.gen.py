@@ -10,7 +10,6 @@ class system_logs(j.code.classGetBase()):
         self._te={}
         self.actorname="logs"
         self.appname="system"
-        #system_logs_osis.__init__(self)
 
 
     def listECOs(self, nid, **kwargs):

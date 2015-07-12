@@ -7,14 +7,15 @@ class DataTables():
     def __init__(self):
         self.inited = False
         self.cache = j.db.keyvaluestore.getMemoryStore('datatables')
-        self._osiscl =j.core.portal.active.osis
+        self._roscl = j.clients.ros.get()
         self._catclient = dict()
 
     def getClient(self, namespace, category):
         key = '%s_%s' % (namespace, category)
         if key in self._catclient:
             return self._catclient[key]
-        client = j.clients.osis.getCategory(self._osiscl, namespace, category)
+        namespaceObj = getattr(self._roscl, namespace)
+        client = getattr(namespaceObj, category)
         self._catclient[key] = client
         return client
 

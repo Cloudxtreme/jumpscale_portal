@@ -82,7 +82,6 @@ class LoaderBaseObject():
         self.model.path=""
         self.model.acl={} #dict with key the group or username; and the value is a string
         self.type = type
-        # self._osis=None
 
     def _createDefaults(self, path):
         src = j.system.fs.joinPaths(j.core.portalloader.getTemplatesPath(), "%s" % self.type)
@@ -115,45 +114,6 @@ class LoaderBaseObject():
             self.model.name = name
         self.model.path=path
         self.processAcl()
-
-    # def processUsers(self, cfgdir=None):
-    #     if cfgdir == "":
-    #         cfgfile = j.system.fs.joinPaths(self.model.path, ".%s" % self.type, "users.cfg")
-    #     else:
-    #         cfgfile = j.system.fs.joinPaths(cfgdir, "users.cfg")
-
-    #     def iniManipulator(ini, section, existsInDb, obj, objFromIni, args):
-    #         # for each obj this will be called
-    #         # can manipulate the inifile or obj
-    #         objFromIni.groups = [item.lower() for item in objFromIni.groups]
-    #         skip = False
-
-    #         if existsInDb:
-    #             reset = False
-    #             if ini.checkParam(section, "reset"):
-    #                 if str(ini.getValue(section, "reset")) == "1":
-    #                     reset = True
-    #             if not reset:
-    #                 # means is in actors,space or bucket cannot overwrite existing object when from system
-    #                 print "skipped user insert for user %s because already created by system." % objFromIni.id
-    #                 return ini, obj, objFromIni, True  # will not use this entry from the config file
-
-    #         if objFromIni.id.find("@") != -1 and objFromIni.emails == "":
-    #             # email in id needs to be set as email in obj
-    #             objFromIni.emails = [obj.id]
-    #             ini.setParam(section, "emails", objFromIni.id)
-    #         if ini.checkParam(section, "key"):
-    #             objFromIni.secret = ini.getValue(section, "key")
-    #             ini.setParam(section, "secret", objFromIni.secret)  # for backwards compatibility, no longer required
-    #         if objFromIni.secret == "":
-    #             objFromIni.secret = objFromIni.guid.replace("-", "")[:9]
-    #             if not ini.checkParam(section, "secret") or (ini.checkParam(section, "secret") and ini.getValue(section, "secret").lower() != "none"):
-    #                 ini.setParam(section, "secret", objFromIni.secret)
-    #         if objFromIni.passwd == "":
-    #             objFromIni.passwd = objFromIni.secret
-    #             # ini.setParam(section,"passwd",obj.passwd)
-    #         return ini, obj, objFromIni, skip
-
 
     def processAcl(self, cfgdir=""):
         # populate acl

@@ -1,6 +1,6 @@
 from JumpScale import j
 
-class test_taskmanager_osis(j.code.classGetBase()):
+class test_taskmanager_ros(j.code.classGetBase()):
     """
     task manager
     

@@ -66,7 +66,7 @@ class PortalFactory():
             def __init__(self):
                 import JumpScale.grid
                 self.actors = dict()
-                self.osis = j.clients.osis.getByInstance('main')
+                self.ros = j.clients.ros.get()
                 self.epoch = time.time()
                 self.actorsloader = j.core.portalloader.getActorsLoader()
                 self.spacesloader = j.core.portalloader.getSpacesLoader()

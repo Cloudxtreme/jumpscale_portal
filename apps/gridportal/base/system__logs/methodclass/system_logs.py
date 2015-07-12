@@ -10,13 +10,12 @@ class system_logs(j.code.classGetBase()):
         self.appname = "system"
 
     def listJobs(self, **args):
-        import JumpScale.grid.osis
 
         nip = 'localhost'
         if args.get('nip'):
             nip = args.get('nip')
-        osiscl = j.clients.osis.getByInstance('main')
-        client = j.clients.osis.getCategory(osiscl, 'system', 'job')
+        ros = j.clients.ros.get()
+        client = ros.system.job
 
         params = {'ffrom': '', 'to': '', 'nid': '', 'gid': '',
                   'parent': '', 'state': '', 'jsorganization': '', 'jsname': '', 'roles': ''}
@@ -70,9 +69,8 @@ class system_logs(j.code.classGetBase()):
 
 
     def listNodes(self, **args):
-        import JumpScale.grid.osis
-        osiscl = j.clients.osis.getByInstance('main')
-        client = j.clients.osis.getCategory(osiscl, 'system', 'node')
+        ros = j.clients.ros.get()
+        client = ros.system.node
         
         nodes = client.search('null')
 

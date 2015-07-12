@@ -15,11 +15,10 @@ from flask import render_template
 from JumpScale.baselib import cmdutils
 
 # default eve settings
-import JumpScale.grid.osis
 import sys
 
 def run(port=5000, mongo_host='localhost', mongo_port=27017, pagination_limit=1000000):
-    client = j.clients.osis.getByInstance('main')
+    client = j.clients.ros.get()
 
     apps = dict()
     

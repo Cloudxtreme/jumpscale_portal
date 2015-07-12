@@ -10,7 +10,6 @@ class system_packagemanager(j.code.classGetBase()):
         self._te={}
         self.actorname="packagemanager"
         self.appname="system"
-        #system_packagemanager_osis.__init__(self)
 
 
     def action(self, nid, domain, pname, action, **kwargs):

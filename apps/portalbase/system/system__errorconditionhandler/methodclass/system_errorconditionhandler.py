@@ -12,7 +12,8 @@ class system_errorconditionhandler(j.code.classGetBase()):
         self._te = {}
         self.actorname = "errorconditionhandler"
         self.appname = "system"
-        self.scl = j.clients.osis.getNamespace('system', j.core.portal.active.osis)
+        ros = j.clients.ros.get()
+        self.scl = ros.system
 
     def describeCategory(self, category, language, description, resolution_user, resolution_ops, **args):
         """

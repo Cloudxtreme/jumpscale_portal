@@ -11,8 +11,6 @@ class system_contentmanager(j.code.classGetBase()):
         self._te={}
         self.actorname="contentmanager"
         self.appname="system"
-        #system_contentmanager_osis.__init__(self)
-
 
     def bitbucketreload(self, spacename, **kwargs):
         """

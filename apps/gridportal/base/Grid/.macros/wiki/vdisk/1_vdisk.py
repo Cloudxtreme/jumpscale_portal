@@ -2,7 +2,7 @@ import datetime
 
 def main(j, args, params, tags, tasklet):
     import JumpScale.baselib.units
-
+    ros = j.clients.ros.get()
     id = args.getTag('id')
     gid = args.getTag('gid')
     if not id or not gid:
@@ -10,7 +10,7 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    vdisk = j.core.portal.active.osis.get('system', 'vdisk', '%s_%s' % (gid, id))
+    vdisk = ros.system.vdisk.get('%s_%s' % (gid, id))
     if not vdisk:
         params.result = ('VDisk with id %s not found' % id, args.doc)
         return params

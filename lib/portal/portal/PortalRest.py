@@ -265,15 +265,16 @@ class PortalRest():
                 objectid = int(paths[2])
                 ctx.params['id'] = objectid
 
-            osiscl = j.clients.osis.getCategory(self.ws.osis, appname, model)
-            osismap = {'GET': ['get', 'list', 'search'], 'POST': [''], 'DELETE': ['delete']}
+            appObject = getattr(self.ws.ros, appname)
+            roscl = getattr(appObject, model)
+            rosmap = {'GET': ['get', 'list', 'search'], 'POST': [''], 'DELETE': ['delete']}
 
             if requestmethod == 'GET':
-                result = self._handle_get(ctx, osiscl, objectid)
+                result = self._handle_get(ctx, roscl, objectid)
             elif requestmethod in ('POST', 'PUT'):
-                result = self._handle_post(ctx, osiscl, objectid)
+                result = self._handle_post(ctx, roscl, objectid)
             elif requestmethod == 'DELETE':
-                result = self._handle_delete(ctx, osiscl, objectid)
+                result = self._handle_delete(ctx, roscl, objectid)
             else:
                 start_response('405 Method not allowed', [('Content-Type', 'text/html')])
                 return 'Requested method is not allowed'
@@ -296,31 +297,31 @@ class PortalRest():
             else:
                 return self.ws.raiseError(ctx, errorObject=eco)
 
-    def _handle_get(self, ctx, osiscl, objectid):
+    def _handle_get(self, ctx, roscl, objectid):
         if objectid:  # get object
-            result = osiscl.get(objectid)
+            result = roscl.get(objectid)
             return result.dump()
         else:  # list or search
             if ctx.env['QUERY_STRING']:  # search
                 query = self._get_query_string(ctx)
-                return osiscl.search(query)[1:]
+                return roscl.search(query)[1:]
             else:  # list
-                return osiscl.search({})[1:]
+                return roscl.search({})[1:]
 
-    def _handle_delete(self, ctx, osiscl, objectid):
-        return osiscl.delete(objectid)
+    def _handle_delete(self, ctx, roscl, objectid):
+        return roscl.delete(objectid)
 
-    def _handle_post(self, ctx, osiscl, objectid):
+    def _handle_post(self, ctx, roscl, objectid):
         fields = ctx.params
         if objectid:  # update
-            obj = osiscl.get(objectid)
+            obj = roscl.get(objectid)
         else:  # new
-            obj = osiscl.new()
+            obj = roscl.new()
         if 'id' in fields:
             fields.pop('id')
         for field, value in fields.iteritems():
             setattr(obj, field, value)
-        return osiscl.set(obj)
+        return roscl.set(obj)
 
     def _get_query_string(self, ctx):
         fields = dict()

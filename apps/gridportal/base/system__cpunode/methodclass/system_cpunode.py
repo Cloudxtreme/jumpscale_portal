@@ -9,7 +9,6 @@ class system_cpunode(j.code.classGetBase()):
         self._te = {}
         self.actorname = "cpunode"
         self.appname = "system"
-        #openvcloud_cpunode_osis.__init__(self)
 
     def init(self, **kwargs):
         """

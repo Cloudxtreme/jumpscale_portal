@@ -7,16 +7,16 @@ def main(j, args, params, tags, tasklet):
     width = args.getTag('width')
     height = args.getTag('height')
     result = "{{jgauge width:%(width)s id:%(id)s height:%(height)s val:%(last24h)s start:0 end:%(total)s}}"
-    cl = j.clients.osis.getByInstance('main')
+    cl = j.clients.ros.get()
     now = datetime.datetime.now()
     aweekago = j.base.time.getEpochAgo('-7d')
-    ecl = j.clients.osis.getCategory(cl, 'system', 'eco')
+    ecl = cl.system.eco
     query = {'epoch': {'eq':'gt', 'value': aweekago, 'name': 'epoch'}}
-    total, firsteco = ecl.simpleSearch(query, size=1, withtotal=True)
+    total, firsteco = ecl.search(query)
 
     last24h = j.base.time.getEpochAgo('-1d')
     query = {'epoch': {'eq':'gt', 'value': last24h, 'name': 'epoch'}}
-    current, _ = ecl.simpleSearch(query, size=1, withtotal=True)
+    current, _ = ecl.search(query)
     average = total
 
     if firsteco:

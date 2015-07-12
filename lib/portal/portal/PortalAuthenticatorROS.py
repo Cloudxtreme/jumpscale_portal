@@ -1,36 +1,36 @@
 from JumpScale import j
 import time
 
-class PortalAuthenticatorOSIS(object):
+class PortalAuthenticatorROS(object):
 
-    def __init__(self, osis):
-        self.osis=j.clients.osis.getCategory(osis,"system","user")
-        self.osisgroups=j.clients.osis.getCategory(osis,"system","group")
-        self.key2user={user['authkey']:user['id'] for user in self.osis.simpleSearch({}, nativequery={'authkey':{'$ne': ''}})}
+    def __init__(self, ros):
+        self.ros = ros.system.user
+        self.rosgroups = ros.system.group
+        self.key2user={user['authkey']:user['id'] for user in self.ros.search({}, nativequery={'authkey':{'$ne': ''}})}
     
     def getUserFromKey(self,key):
         if not key in self.key2user:
             return "guest"
         return self.key2user[key]
 
-    def _getkey(self, username, osis):
-        results = osis.simpleSearch({'id': username}, withguid=True)
+    def _getkey(self, username, ros):
+        results = ros.search({'id': username})
         if results:
             return results[0]['guid']
         else:
             return "%s_%s" % (j.application.whoAmI.gid, username)
 
     def getUserInfo(self, user):
-        return self.osis.get(self._getkey(user, self.osis))
+        return self.ros.get(self._getkey(user, self.ros))
 
     def getGroupInfo(self, groupname):
-        return self.osisgroups.get(self._getkey(groupname, self.osisgroups))
+        return self.rosgroups.get(self._getkey(groupname, self.rosgroups))
 
     def userExists(self, user):
-        return self.osis.exists(self._getkey(user, self.osis))
+        return self.ros.exists(self._getkey(user, self.ros))
 
     def createUser(self, username, password, email, groups, domain):
-        user = self.osis.new()
+        user = self.ros.new()
         user.id=username
         if isinstance(groups, basestring):
             groups = [groups]
@@ -40,13 +40,13 @@ class PortalAuthenticatorOSIS(object):
         user.emails=email
         user.domain=domain
         user.passwd=j.tools.hash.md5_string(password)
-        self.osis.set(user)
+        self.ros.set(user)
 
     def listUsers(self):
-        return self.osis.simpleSearch({})
+        return self.ros.search({})
 
     def listGroups(self):
-        return self.osisgroups.simpleSearch({})
+        return self.rosgroups.search({})
 
     def getGroups(self,user):
         try:
@@ -56,7 +56,7 @@ class PortalAuthenticatorOSIS(object):
             return ["guest","guests"]
 
     def loadFromLocalConfig(self):
-        #@tddo load from users.cfg & populate in osis
+        #@tddo load from users.cfg & populate in ros
         #see jsuser for example
         pass
 
@@ -65,7 +65,7 @@ class PortalAuthenticatorOSIS(object):
         """
         login = login[0] if isinstance(login, list) else login
         passwd = passwd[0] if isinstance(passwd, list) else passwd
-        result=self.osis.authenticate(name=login,passwd=passwd)
+        result=self.ros.authenticate(name=login,passwd=passwd)
         return result['authenticated']
     
     def getUserSpaceRights(self, username, space, **kwargs):

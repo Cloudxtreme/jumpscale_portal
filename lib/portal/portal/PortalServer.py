@@ -9,10 +9,10 @@ import requests
 
 from beaker.middleware import SessionMiddleware
 from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess, MacroexecutorMarkDown
-from .PortalAuthenticatorOSIS import PortalAuthenticatorOSIS
+from .PortalAuthenticatorROS import PortalAuthenticatorROS
 from .RequestContext import RequestContext
 from .PortalRest import PortalRest
-from .OsisBeaker import OsisBeaker
+from .RosBeaker import RosBeaker
 from . import exceptions
 from .auth import AuditMiddleWare
 
@@ -78,7 +78,7 @@ class PortalServer:
 
         j.core.portal.active=self
 
-        self.osis = j.clients.osis.getByInstance(self.hrd.get('jp.instance', 'main'))
+        self.ros = j.clients.ros.get(instance=self.hrd.get('jp.instance', 'main'))
 
         self.watchedspaces = []
         self.pageKey2doc = {}
@@ -101,9 +101,9 @@ class PortalServer:
 
         session_opts = {
             'session.cookie_expires': False,
-            'session.type': 'OsisBeaker',
-            'session.namespace_class': OsisBeaker,
-            'session.namespace_args': {'client': self.osis},
+            'session.type': 'RosBeaker',
+            'session.namespace_class': RosBeaker,
+            'session.namespace_args': {'client': self.ros},
             'session.data_dir': '%s' % j.system.fs.joinPaths(j.dirs.varDir, "beakercache")
         }
         self._router = SessionMiddleware(AuditMiddleWare(self.router), session_opts)
@@ -125,7 +125,7 @@ class PortalServer:
         if self.authentication_method == 'gitlab':
             self.auth=PortalAuthenticatorGitlab(instance=self.gitlabinstance)
         else:
-            self.auth=PortalAuthenticatorOSIS(self.osis)
+            self.auth=PortalAuthenticatorROS(self.ros)
 
         #  Load local spaces
         self.rest=PortalRest(self)
@@ -282,7 +282,7 @@ class PortalServer:
         username = ctx.env['beaker.session']["user"]
         spaces =  self.auth.getUserSpaces(username, spaceloader=self.spacesloader)
 
-        # In case of gitlab, we want to get the local osis spaces tha user has access to
+        # In case of gitlab, we want to get the local ros spaces tha user has access to
         if self.authentication_method == 'gitlab':
             spaces += self.getAccessibleLocalSpacesForGitlabUser(spaces).keys()
 

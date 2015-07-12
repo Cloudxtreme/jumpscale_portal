@@ -12,7 +12,8 @@ class system_alerts(j.code.classGetBase()):
         self._te = {}
         self.actorname = "alertshandler"
         self.appname = "system"
-        self.scl = j.clients.osis.getNamespace('system', j.core.portal.active.osis)
+        self.ros = j.clients.ros.get()
+        self.scl = self.ros.system
 
 
     def update(self, state, alert, comment=None, username=None, **kwargs):

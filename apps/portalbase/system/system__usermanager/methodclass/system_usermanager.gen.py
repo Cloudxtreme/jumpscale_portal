@@ -10,8 +10,6 @@ class system_usermanager(j.code.classGetBase()):
         self._te={}
         self.actorname="usermanager"
         self.appname="system"
-        #system_usermanager_osis.__init__(self)
-
 
     def authenticate(self, name, secret, **kwargs):
         """

@@ -10,7 +10,6 @@ class system_gridmanager(j.code.classGetBase()):
         self._te={}
         self.actorname="gridmanager"
         self.appname="system"
-        #system_gridmanager_osis.__init__(self)
 
 
     def getAgentControllerActiveJobs(self, **kwargs):
@@ -57,7 +56,7 @@ class system_gridmanager(j.code.classGetBase()):
 
     def getDisks(self, id, guid, gid, nid, fs, sizeFrom, sizeTo, freeFrom, freeTo, mounted, ssd, path, model, description, mountpoint, type, active, lastcheckFrom, lastcheckTo, **kwargs):
         """
-        list found disks (are really partitions) (comes from osis)
+        list found disks (are really partitions) (comes from ros)
         param:id find based on id
         param:guid find based on guid
         param:gid find disks for specified grid
@@ -184,7 +183,7 @@ class system_gridmanager(j.code.classGetBase()):
 
     def getMachines(self, id, guid, otherid, gid, nid, name, description, state, roles, ipaddr, macaddr, active, cpucore, mem, type, lastcheckFrom, lastcheckTo, **kwargs):
         """
-        list found machines (comes from osis)
+        list found machines (comes from ros)
         param:id find based on id
         param:guid find based on guid
         param:otherid find based on 2nd id
@@ -218,7 +217,7 @@ class system_gridmanager(j.code.classGetBase()):
 
     def getNodes(self, id, guid, gid, name, roles, ipaddr, macaddr, active, peer_stats, peer_log, peer_backup, lastcheckFrom, lastcheckTo, **kwargs):
         """
-        list found nodes (comes from osis)
+        list found nodes (comes from ros)
         param:id find specific id
         param:guid find based on guid
         param:gid find nodes for specified grid
@@ -250,7 +249,7 @@ class system_gridmanager(j.code.classGetBase()):
 
     def getProcesses(self, id, guid, name, nid, gid, from_, to, active, jpdomain, jpname, instance, systempid, lastcheckFrom, lastcheckTo, **kwargs):
         """
-        list processes (comes from osis), are the grid unique processes (not integrated with processmanager yet)
+        list processes (comes from ros), are the grid unique processes (not integrated with processmanager yet)
         param:id only find 1 process entry
         param:guid find based on guid
         param:name match on text in name
@@ -272,7 +271,7 @@ class system_gridmanager(j.code.classGetBase()):
 
     def getProcessesActive(self, nid, name, domain, **kwargs):
         """
-        ask the right processmanager on right node to get the info (this comes not from osis)
+        ask the right processmanager on right node to get the info (this comes not from ros)
         output all relevant info (no stat info for that we have getProcessStats)
         param:nid id of node (if not specified goes to all nodes and aggregates)
         param:name optional name for process name (part of process name)
@@ -296,7 +295,7 @@ class system_gridmanager(j.code.classGetBase()):
 
     def getVDisks(self, id, machineid, guid, gid, nid, disk_id, fs, sizeFrom, sizeTo, freeFrom, freeTo, sizeondiskFrom, sizeondiskTo, mounted, path, description, mountpoint, role, type, order, devicename, backup, backuplocation, backuptime, backupexpiration, active, lastcheckFrom, lastcheckTo, **kwargs):
         """
-        list found vdisks (virtual disks like qcow2 or sections on fs as used by a container or virtual machine) (comes from osis)
+        list found vdisks (virtual disks like qcow2 or sections on fs as used by a container or virtual machine) (comes from ros)
         param:id find based on id
         param:machineid to which machine is the vdisk attached
         param:guid find based on guid

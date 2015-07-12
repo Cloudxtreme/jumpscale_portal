@@ -4,7 +4,8 @@ def main(j, args, params, tags, tasklet):
 
     params.result = page = args.page
     groupguid = args.getTag('guid')
-    scl = j.clients.osis.getNamespace('system')
+    ros = j.clients.ros.get()
+    scl = ros.system
     group = scl.group.get(groupguid)
 
     popup = Popup(id='group_edit', header='Change Group', clearForm=False, submit_url='/restmachine/system/usermanager/editGroup')

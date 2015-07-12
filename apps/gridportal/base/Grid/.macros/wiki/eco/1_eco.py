@@ -1,5 +1,4 @@
 import datetime
-import JumpScale.grid.osis
 
 def main(j, args, params, tags, tasklet):
     id = args.getTag('id')
@@ -8,8 +7,9 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    oscl = j.clients.osis.getByInstance('main')
-    ecocl = j.clients.osis.getCategory(oscl, 'system', 'eco')
+    roscl = j.clients.ros.get()
+    ecocl = roscl.system.eco
+    
     try:
         obj = ecocl.get(id).__dict__
     except:

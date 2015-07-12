@@ -11,8 +11,8 @@ def main(j, args, params, tags, tasklet):
     # tags = params.tags
 
     passwd = j.application.config.get("grid.master.superadminpasswd")
-    osis = j.clients.osis.get(j.application.config.get("grid.master.ip"), passwd=passwd, user='root')
-    osis_test = j.clients.osis.getCategory(osis,"system","test")
+    ros = j.clients.ros.get(j.application.config.get("grid.master.ip"), passwd=passwd, user='root')
+    ros_test = ros.system.test
 
     tid = args.getTag('id')
     if not tid:
@@ -20,7 +20,7 @@ def main(j, args, params, tags, tasklet):
         params.result = out, doc
         return params
 
-    tests = osis_test.simpleSearch({'id': tid})
+    tests = ros_test.search({'id': tid})
     if not tests:
         out = 'Could not find test with id %s' % tid
         params.result = out, doc

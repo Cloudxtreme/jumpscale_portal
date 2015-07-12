@@ -9,7 +9,8 @@ clients = dict()
 
 def getClient(namespace):
     if namespace not in clients:
-        client = j.clients.osis.getNamespace(namespace, j.core.portal.active.osis)
+        ros = j.clients.ros.get()
+        client = getattr(ros, namespace)
         clients[namespace] = client
     return clients[namespace]
 

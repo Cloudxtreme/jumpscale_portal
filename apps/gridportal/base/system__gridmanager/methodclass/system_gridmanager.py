@@ -1,6 +1,5 @@
 from JumpScale import j
 import JumpScale.grid.geventws
-import JumpScale.grid.osis
 import JumpScale.grid.agentcontroller
 import JumpScale.baselib.serializers
 
@@ -26,20 +25,20 @@ class system_gridmanager(j.code.classGetBase()):
         self._nodeMap = dict()
         self.clientsIp = dict()
 
-        osis = j.core.portal.active.osis
-        self.osis_node = j.clients.osis.getCategory(osis,"system","node")
-        self.osis_job = j.clients.osis.getCategory(osis,"system","job")
-        self.osis_eco = j.clients.osis.getCategory(osis,"system","eco")
-        self.osis_process = j.clients.osis.getCategory(osis,"system","process")
-        self.osis_application = j.clients.osis.getCategory(osis,"system","applicationtype")
-        self.osis_grid = j.clients.osis.getCategory(osis,"system","grid")
-        self.osis_machine = j.clients.osis.getCategory(osis,"system","machine")
-        self.osis_disk = j.clients.osis.getCategory(osis,"system","disk")
-        self.osis_vdisk = j.clients.osis.getCategory(osis,"system","vdisk")
-        self.osis_alert = j.clients.osis.getCategory(osis,"system","alert")
-        self.osis_log = j.clients.osis.getCategory(osis,"system","log")
-        self.osis_nic = j.clients.osis.getCategory(osis,"system","nic")
-        self.osis_jumpscript = j.clients.osis.getCategory(osis,"system","jumpscript")
+        ros = j.clients.ros.get()
+        self.ros_node = ros.system.node
+        self.ros_job = ros.system.job
+        self.ros_eco = ros.system.eco
+        self.ros_process = ros.system.process
+        self.ros_application = ros.system.applicationtype
+        self.ros_grid = ros.system.grid
+        self.ros_machine = ros.system.machine
+        self.ros_disk = ros.system.disk
+        self.ros_vdisk = ros.system.vdisk
+        self.ros_alert = ros.system.alert
+        self.ros_log = ros.system.log
+        self.ros_nic = ros.system.nic
+        self.ros_jumpscript = ros.system.jumpscript
 
     def getClient(self,nid,category):
         nid = int(nid)
@@ -86,7 +85,7 @@ class system_gridmanager(j.code.classGetBase()):
         return result
 
     def _getNode(self, nid):
-        node=self.osis_node.get(getInt(nid))
+        node=self.ros_node.get(getInt(nid))
         r = dict()
         r["id"]=node.id
         r["roles"]=node.roles
@@ -126,7 +125,7 @@ class system_gridmanager(j.code.classGetBase()):
                   'peer_backup': peer_backup,
                   'id': getInt(id),
                   }
-        results = self.osis_node.simpleSearch(params)
+        results = self.ros_node.search(params)
         def myfilter(node):
             self._nodeMap[node['id']] = node
             if roles and not set(roles).issubset(set(node['roles'])):
@@ -218,7 +217,7 @@ class system_gridmanager(j.code.classGetBase()):
 
     def getProcessesActive(self, nid, name, domain, **kwargs):
         """
-        ask the right processmanager on right node to get the info (this comes not from osis)
+        ask the right processmanager on right node to get the info (this comes not from ros)
         output all relevant info (no stat info for that we have getProcessStats)
         param:nid id of node (if not specified goes to all nodes and aggregates)
         param:name optional name for process name (part of process name)
@@ -239,10 +238,10 @@ class system_gridmanager(j.code.classGetBase()):
         # TODO include loginfo
         job = None
         if guid and not id:
-            jobs = self.osis_job.simpleSearch({'guid':guid})
+            jobs = self.ros_job.search({'guid':guid})
             if jobs:
                 id = jobs[0]['id']
-        job = self.osis_job.get(id)
+        job = self.ros_job.get(id)
         return {'result': job}
 
     def getLogs(self, id=None, level=None, category=None, text=None, from_=None, to=None, jid=None, nid=None, gid=None, pid=None, tags=None, guid=None, **kwargs):
@@ -275,7 +274,7 @@ class system_gridmanager(j.code.classGetBase()):
                   'pid': pid,
                   'tags': tags,
                   }
-        return self.osis_log.simpleSearch(params)
+        return self.ros_log.search(params)
 
     def getJobs(self, id=None, guid=None, from_=None, to=None, nid=None, gid=None, parent=None, roles=None, state=None, organization=None, name=None, description=None, category=None, source=None, **kwargs):
         """
@@ -309,7 +308,7 @@ class system_gridmanager(j.code.classGetBase()):
                   'state': state,
                   'category': organization,
                   'cmd': name}
-        return self.osis_job.simpleSearch(params)
+        return self.ros_job.search(params)
 
     def getErrorconditions(self, id=None, level=None, descr=None, descrpub=None, from_=None, to=None, nid=None, gid=None, category=None, tags=None, type=None, jid=None, jidparent=None, jsorganization=None, jsname=None, **kwargs):
         """
@@ -347,12 +346,12 @@ class system_gridmanager(j.code.classGetBase()):
                   'id': id,
                   'jsorganization': jsorganization,
                   'jsname': jsname}
-        return self.osis_eco.simpleSearch(params, withguid=True)
+        return self.ros_eco.search(params)
 
 
     def getProcesses(self, id=None, guid=None, name=None, nid=None, gid=None, from_=None, to=None, active=None, jpdomain=None, jpname=None, instance=None, systempid=None, lastcheckFrom=None, lastcheckTo=None, **kwargs):
         """
-        list processes (comes from osis), are the grid unique processes (not integrated with processmanager yet)
+        list processes (comes from ros), are the grid unique processes (not integrated with processmanager yet)
         param:id only find 1 process entry
         param:name match on text in name
         param:nid find logs for specified node
@@ -387,14 +386,14 @@ class system_gridmanager(j.code.classGetBase()):
                   'guid': guid,
                   }
 
-        return self.osis_process.simpleSearch(params)
+        return self.ros_process.search(params)
 
     def getGrids(self, **kwargs):
         """
         list grids
         result list(list)
         """
-        return self.osis_grid.simpleSearch({})
+        return self.ros_grid.search({})
 
     def getJumpscript(self, organization, name, **kwargs):
         """
@@ -402,7 +401,7 @@ class system_gridmanager(j.code.classGetBase()):
         param:jsorganization
         param:jsname
         """
-        return self.osis_jumpscript.search({'organization': organization, 'name': name})[1]
+        return self.ros_jumpscript.search({'organization': organization, 'name': name})[1]
 
     def getJumpscripts(self, organization=None, **kwargs):
         """
@@ -411,7 +410,7 @@ class system_gridmanager(j.code.classGetBase()):
         param:jsorganization find jumpscripts
         """
         res={}
-        for js in self.osis_jumpscript.simpleSearch({'organization': organization}):
+        for js in self.ros_jumpscript.search({'organization': organization}):
             key="%s:%s"%(js["organization"],js["name"])
             if not res.has_key(key):
                 res[key]=js
@@ -502,11 +501,11 @@ class system_gridmanager(j.code.classGetBase()):
                   'nrerrorconditions': nrerrorconditions,
                   'errorcondition': errorcondition,
                  }
-        return self.osis_alert.simpleSearch(params)
+        return self.ros_alert.search(params)
 
     def getVDisks(self, id=None, machineid=None, guid=None, gid=None, nid=None, disk_id=None, fs=None, sizeFrom=None, sizeTo=None, freeFrom=None, freeTo=None, sizeondiskFrom=None, sizeondiskTo=None, mounted=None, path=None, description=None, mountpoint=None, role=None, type=None, order=None, devicename=None, backup=None, backuplocation=None, backuptime=None, backupexpiration=None, active=None, lastcheckFrom=None, lastcheckTo=None, **kwargs):
         """
-        list found vdisks (virtual disks like qcow2 or sections on fs as used by a container or virtual machine) (comes from osis)
+        list found vdisks (virtual disks like qcow2 or sections on fs as used by a container or virtual machine) (comes from ros)
         param:id find based on id
         param:machineid to which machine is the vdisk attached
         param:guid find based on guid
@@ -568,11 +567,11 @@ class system_gridmanager(j.code.classGetBase()):
                   'backuptime': backuptime,
                   'active': active,
                  }
-        return self.osis_vdisk.simpleSearch(params)
+        return self.ros_vdisk.search(params)
 
     def getMachines(self, id=None, guid=None, otherid=None, gid=None, nid=None, name=None, description=None, state=None, roles=None, ipaddr=None, macaddr=None, active=None, cpucore=None, mem=None, type=None, lastcheckFrom=None, lastcheckTo=None, **kwargs):
         """
-        list found machines (comes from osis)
+        list found machines (comes from ros)
         param:id find based on id
         param:guid find based on guid
         param:otherid find based on 2nd id
@@ -618,14 +617,14 @@ class system_gridmanager(j.code.classGetBase()):
                 return False
             return True
 
-        results = self.osis_machine.simpleSearch(params)
+        results = self.ros_machine.search(params)
         return filter(myfilter, results)
 
     def getDisks(self, id=None, guid=None, gid=None, nid=None, fs=None, sizeFrom=None, sizeTo=None, freeFrom=None, \
                  freeTo=None, mounted=None, ssd=None, path=None, model=None, description=None, mountpoint=None, \
                  type=None, active=None, lastcheckFrom=None, lastcheckTo=None, **kwargs):
         """
-        list found disks (are really partitions) (comes from osis)
+        list found disks (are really partitions) (comes from ros)
         param:id find based on id
         param:guid find based on guid
         param:gid find disks for specified grid
@@ -669,12 +668,12 @@ class system_gridmanager(j.code.classGetBase()):
                   'type': type,
                   'active': active,
                  }
-        return self.osis_disk.simpleSearch(params)
+        return self.ros_disk.search(params)
 
 
     def getNics(self, id=None, guid=None, gid=None, nid=None, active=None, ipaddr=None, lastcheck=None, mac=None, name=None, **kwargs):
         """
-        list found disks (are really partitions) (comes from osis)
+        list found disks (are really partitions) (comes from ros)
         param:id find based on id
         param:guid find based on guid
         param:gid find disks for specified grid
@@ -696,6 +695,6 @@ class system_gridmanager(j.code.classGetBase()):
                   'ipaddr': ipaddr,
                   'active': active
                  }
-        return self.osis_nic.simpleSearch(params)
+        return self.ros_nic.search(params)
 
 

@@ -29,21 +29,14 @@ class TEST(unittest.TestCase):
         print l2
 
     def test_getJpackageInfo(self):
-        jp=self.actor.getJPackageInfo(j.application.whoAmI.nid,"jumpscale","osis")
+        jp=self.actor.getJPackageInfo(j.application.whoAmI.nid,"jumpscale","ros")
         print jp
 
 
     def test_getJpackageFilesInfo(self):
-        info=self.actor.getJPackageFilesInfo(j.application.whoAmI.nid,"jumpscale","osis")
+        info=self.actor.getJPackageFilesInfo(j.application.whoAmI.nid,"jumpscale","ros")
         # print info
 
     def test_action(self):
-        info=self.actor.action(j.application.whoAmI.nid,domain="jumpscale",pname="osis",action="start")
+        info=self.actor.action(j.application.whoAmI.nid,domain="jumpscale",pname="ros",action="start")
         print info
-
-
-        
-
-
-    #@todo finish tests and make better
-

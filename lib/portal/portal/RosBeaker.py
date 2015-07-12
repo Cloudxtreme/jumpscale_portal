@@ -1,5 +1,5 @@
 from beaker.container import NamespaceManager
-class OsisBeaker(NamespaceManager):
+class RosBeaker(NamespaceManager):
     def __init__(self, id, namespace_args, **kwargs):
         self._namespace = 'system'
         self._category = 'sessioncache'

@@ -1,7 +1,8 @@
     
 def main(j, args, params, tags, tasklet):
     import JumpScale.baselib.units
-
+    ros = j.clients.ros.get()
+    diskcl = ros.system.disk
     id = args.getTag('id')
     gid = args.getTag('gid')
     nid = args.getTag('nid')
@@ -11,10 +12,10 @@ def main(j, args, params, tags, tasklet):
         return params
 
     key = "%s_%s_%s" % (gid, nid, id)
-    if not j.core.portal.active.osis.exists('system', 'disk', key):
+    if not diskcl.exists(key):
         params.result = ('Disk with id %s not found' % id, args.doc)
         return params
-    disk = j.core.portal.active.osis.get('system', 'disk', key)
+    disk = diskcl.get(key)
 
     def objFetchManipulate(id):
         disk['usage'] = 100 - int(100.0 * float(disk['free']) / float(disk['size']))

@@ -3,7 +3,8 @@ import json # pretty printer require native json
 
 def main(j, args, params, tags, tasklet):    
     import urllib
-
+    ros = j.clients.ros.get()
+    ecocl = ros.system.eco
     id = args.getTag('id')
     if not id:
         out = 'Missing job id param "id"'
@@ -25,7 +26,7 @@ def main(j, args, params, tags, tasklet):
         obj['state'] = "FAILED"
         try:
             eco = json.loads(obj['result'])
-            if j.core.portal.active.osis.exists('system', 'eco', eco['guid']):
+            if ecocl.exists(eco['guid']):
                 obj['resultline'] = '{{errorresult ecoguid:%s}}' % eco['guid']
             else:
                 obj['resultline'] = "ECO: Is not available anymore"

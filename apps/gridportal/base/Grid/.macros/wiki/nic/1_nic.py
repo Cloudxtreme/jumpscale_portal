@@ -1,13 +1,15 @@
 import datetime
 
 def main(j, args, params, tags, tasklet):
+    ros = j.clients.ros.get()
+    niccl = ros.system.nic
     guid = args.getTag('id')
     if not guid:
         out = 'Missing NIC guid param "guid"'
         params.result = (out, args.doc)
         return params
 
-    nic = j.core.portal.active.osis.get('system', 'nic', guid)
+    nic = niccl.get(guid)
     if not nic:
         params.result = ('NIC with guid %s not found' % guid, args.doc)
         return params
