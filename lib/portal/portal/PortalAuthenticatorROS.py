@@ -6,8 +6,7 @@ class PortalAuthenticatorROS(object):
     def __init__(self, ros):
         self.ros = ros.system.user
         self.rosgroups = ros.system.group
-        self.key2user={user['authkey']:user['id'] for user in self.ros.search({}, nativequery={'authkey':{'$ne': ''}})}
-    
+        self.key2user={user['authkey']:user['id'] for user in self.ros.search({'authkey':{'$ne': ''}})}
     def getUserFromKey(self,key):
         if not key in self.key2user:
             return "guest"
@@ -50,7 +49,7 @@ class PortalAuthenticatorROS(object):
 
     def getGroups(self,user):
         try:
-            userinfo = self.getUserInfo(user).__dict__
+            userinfo = self.getUserInfo(user)
             return userinfo['groups'] + ["all"]
         except:
             return ["guest","guests"]
@@ -60,14 +59,15 @@ class PortalAuthenticatorROS(object):
         #see jsuser for example
         pass
 
-    def authenticate(self,login,passwd):
-        """
-        """
+    def authenticate(self,login, passwd):
         login = login[0] if isinstance(login, list) else login
         passwd = passwd[0] if isinstance(passwd, list) else passwd
-        result=self.ros.authenticate(name=login,passwd=passwd)
-        return result['authenticated']
-    
+        query = {'id': login, 'active':True, '$or':[{'passwd':j.tools.hash.md5_string(passwd)}, {'passwd':passwd}]}
+        results = self.ros.search(query)
+        if not results:
+            return False
+        return True
+
     def getUserSpaceRights(self, username, space, **kwargs):
         spaceobject = kwargs['spaceobject']
         groupsusers = set(self.getGroups(username))

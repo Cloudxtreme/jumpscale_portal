@@ -12,6 +12,7 @@ class system_contentmanager(j.code.classGetBase()):
         self.actorname="contentmanager"
         self.appname="system"
 
+
     def bitbucketreload(self, spacename, **kwargs):
         """
         Reload all spaces from bitbucket post

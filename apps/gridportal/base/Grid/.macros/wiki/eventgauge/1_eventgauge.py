@@ -12,11 +12,11 @@ def main(j, args, params, tags, tasklet):
     aweekago = j.base.time.getEpochAgo('-7d')
     ecl = cl.system.eco
     query = {'epoch': {'eq':'gt', 'value': aweekago, 'name': 'epoch'}}
-    total, firsteco = ecl.search(query)
-
+    firsteco = ecl.search(query)
+    total = len(firsteco)
     last24h = j.base.time.getEpochAgo('-1d')
     query = {'epoch': {'eq':'gt', 'value': last24h, 'name': 'epoch'}}
-    current, _ = ecl.search(query)
+    current = len(ecl.search(query))
     average = total
 
     if firsteco:

@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
     result = "{{jgauge width:%(width)s id:%(id)s height:%(height)s val:%(running)s start:0 end:%(total)s}}"
     cl = j.clients.ros.get()
     vmcl = cl.system.machine
-    running = vmcl.search({'state': 'RUNNING'})[0]
+    running = len(vmcl.search({'state': 'RUNNING'}))
     total = len(vmcl.list())
     result = result % {'height': height,
                        'width': width,

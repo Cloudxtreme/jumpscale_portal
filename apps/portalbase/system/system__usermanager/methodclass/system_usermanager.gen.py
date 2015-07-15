@@ -11,6 +11,7 @@ class system_usermanager(j.code.classGetBase()):
         self.actorname="usermanager"
         self.appname="system"
 
+
     def authenticate(self, name, secret, **kwargs):
         """
         authenticate and return False if not successfull

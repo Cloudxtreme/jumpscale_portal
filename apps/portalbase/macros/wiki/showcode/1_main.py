@@ -12,7 +12,7 @@ def main(j, args, params, tags, tasklet):
             codepaths[parent] = '%s Actors' % j.system.fs.getBaseName(parent).capitalize()
 
 
-    codepaths[j.system.fs.joinPaths('$base', 'apps', 'ros', 'logic')] = 'Models'
+    codepaths[j.system.fs.joinPaths('$base', 'apps', 'ros', 'models')] = 'Models'
 
     codepaths[j.system.fs.joinPaths('$jumpscriptsdir', 'jumpscripts')] = 'Jumpscripts'
 

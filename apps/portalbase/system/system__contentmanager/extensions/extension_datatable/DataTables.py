@@ -132,8 +132,9 @@ class DataTables():
                 if isinstance(getattr(dummyobj, idname, None), str):
                     nativequery['query']['bool']['should'].append({'wildcard': {idname: '*%s*' % kwargs['sSearch'].lower()}})
             nativequery
-
-        total, inn = client.simpleSearch(filters, size=size, start=start, withtotal=True, sort=sort, partials=partials, withguid=True, nativequery=nativequery)
+        
+        inn = client.search(filters)
+        total = len(inn)
         result = {}
         result["sEcho"] = int(kwargs.get('sEcho', 1))
         result["iTotalRecords"] = total
@@ -142,7 +143,7 @@ class DataTables():
         for row in inn:
             r = []
             for field, fieldid in zip(fieldvalues, fieldids):
-                if field in row:
+                if field in row._dump():
                     r.append(row[field])
                 elif j.basetype.integer.check(field):
                     r.append(row[field])

@@ -4,12 +4,13 @@ class RosBeaker(NamespaceManager):
         self._namespace = 'system'
         self._category = 'sessioncache'
         self.namespace = id
-        self._client = namespace_args['client']
+        self.systemcl = getattr(namespace_args['client'], self._namespace)
+        self._client = getattr(self.systemcl , self._category)
 
     def __getitem__(self, key):
         key = "%s_%s" % (self.namespace, key)
-        if self._client.exists(categoryname=self._category, namespace=self._namespace, key=key):
-            return self._client.get(categoryname=self._category, namespace=self._namespace, key=key)
+        if self._client.exists(key):
+            return self._client.get(key).value
         else:
             raise KeyError(key)
 
@@ -20,15 +21,24 @@ class RosBeaker(NamespaceManager):
             return
         elif value['user'] == 'guest':
             return
-        self._client.set(categoryname=self._category, namespace=self._namespace, key=nkey, value=value)
+
+        if self._client.exists(nkey):
+            item = self._client.get(nkey)
+            item.value = value
+            self._client.update(item)
+        else:
+            item = self._client.new()
+            item.guid = nkey
+            item.value = value
+            self._client.set(item)
 
     def _remove(self, key):
         key = "%s_%s" % (self.namespace, key)
-        self._client.delete(categoryname=self._category, namespace=self._namespace, key=key)
+        self._client.delete(key)
 
     def __contains__(self, key):
         key = "%s_%s" % (self.namespace, key)
-        return self._client.exists(self._namespace, self._category, key)
+        return self._client.exists(key)
 
     def __delitem__(self, key, **kwargs):
         self._remove(key)
