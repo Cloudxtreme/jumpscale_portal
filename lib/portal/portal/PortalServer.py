@@ -926,7 +926,7 @@ class PortalServer:
         return True, session
 
     def _getParamsFromEnv(self, env, ctx):
-        params = urlparse.parse_qs(env["QUERY_STRING"])
+        params = urlparse.parse_qs(env["QUERY_STRING"], 1)
         def simpleParams(params):
             # HTTP parameters can be repeated multiple times, i.e. in case of using <select multiple>
             # Example: a=1&b=2&a=3
@@ -963,7 +963,7 @@ class PortalServer:
                 postData = env["wsgi.input"].read()
                 if postData.strip() == "":
                     return params
-                params.update(dict(urlparse.parse_qs(postData)))
+                params.update(dict(urlparse.parse_qs(postData, 1)))
                 return simpleParams(params)
             elif contentype.find("multipart/form-data") != -1 and env.get('HTTP_TRANSFER_ENCODING') != 'chunked':
                 forms, files = multipart.parse_form_data(ctx.env)
