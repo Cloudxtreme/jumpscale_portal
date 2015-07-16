@@ -9,7 +9,7 @@ h3. Actions
 
 {{actions:
 
-- display: Refresh Node
+- display: Run Healthcheck on Node
   action: /restmachine/system/health/run
   data:
    nid: $$nid
