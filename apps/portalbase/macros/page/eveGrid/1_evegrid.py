@@ -5,7 +5,6 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     
     hrd = j.core.hrd.get(content=args.cmdstr)
-
     eveGrid = {
         'specJsonPath': hrd.get('spec.json.path', default='/docs/spec.json'),
         'schemaURL': hrd.getStr('schema.url', default=''),

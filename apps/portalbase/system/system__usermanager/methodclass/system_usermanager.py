@@ -118,6 +118,7 @@ class system_usermanager(j.code.classGetBase()):
         result bool
 
         """
+        import ipdb;ipdb.set_trace()
         if self.modelGroup.search({'id': name})[1:]:
             raise exceptions.Conflict("Group with name %s already exists" % name)
         group = self.modelGroup.new()

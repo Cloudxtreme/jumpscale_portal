@@ -2,7 +2,6 @@
 import datetime
 
 def main(j, args, params, tags, tasklet):
-    import ipdb;ipdb.set_trace()
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
     userdetails = '/system/user?id'

@@ -5,7 +5,7 @@
 }}
 
 {{evegrid:
-    schema.url='/proxy/eve/system'
+    schema.url='/proxy/eve/models/system'
     spec.json.path=/docs/spec.json
     entity.name=eco
     datetime.fields=epoch

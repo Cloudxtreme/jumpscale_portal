@@ -4,7 +4,6 @@ try:
 except:
     import json
 def main(j, args, params, tags, tasklet):
-
     #macro puts obj info as params on doc, when show used as label, shows the content of the obj in nicely structured code block
     nid = args.getTag('id')
     gid = args.getTag('gid')
@@ -35,11 +34,12 @@ def main(j, args, params, tags, tasklet):
             ip = netitem['ip']
             mac = netitem['mac']
             r+="|%-15s | %-20s | %s| \n"%(dev,mac,ip)
-
         node["netaddr"]=r
         node['gridname'] = grid['name']
         node['nodename'] = node['name']
-        return node
+        res = node._dump()
+        res.update(node.__dict__)
+        return res
 
     push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc
 

@@ -52,7 +52,7 @@ eveModule.directive('eveGrid', function($http, $filter) {
                     'title': '<input class="allCheck" type="checkbox"></input>'
                 }];
                 var showFields = [];
-                var eveFields = scope.schema.domains[attrs["eveEntity"]]['/' + attrs["eveEntity"]].POST.params;
+                var eveFields = scope.schema.paths['/' + attrs["eveEntity"]].post.parameters;
 
                 for (var i = 0; i < JSON.parse( attrs['columns'] ).length; i++) {
                     var field = _.findWhere(eveFields, {name: JSON.parse( attrs['columns'] )[i].data});
