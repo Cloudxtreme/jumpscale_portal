@@ -2,7 +2,6 @@ from JumpScale import j
 import re
 import os
 import jinja2
-import ExtraTools
 import os.path
 
 fs = j.system.fs
@@ -80,7 +79,7 @@ class Doc(object):
         return self.preprocessor.spacename
 
     def getPageKey(self):
-        key = ExtraTools.ByteProcessor.hashMd5("%s_%s" % (self.pagename, self.getSpaceName()))
+        key =j.base.byteprocessor.hashMd5("%s_%s" % (self.pagename, self.getSpaceName()))
         j.core.portal.active.pageKey2doc[key] = self
         return key
 

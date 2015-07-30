@@ -1,6 +1,7 @@
 #from ActorsLoaderRemote import ActorsLoaderRemote
 from .PortalServer import PortalServer
 from .PortalClient import PortalClient
+from .PortalClient2 import Resource
 import time
 #from ActorLoaderLocal import *
 
@@ -43,6 +44,9 @@ class PortalFactoryClient(object):
             self._portalClients[key] = cl
             # cl._loadSpaces()
             return cl
+
+    def get2(self, ip="localhost", port=82, secret=None):
+        return Resource(ip, port, secret, "/restmachine")
 
 class PortalFactory():
 

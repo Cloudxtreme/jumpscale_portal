@@ -1,4 +1,6 @@
 from JumpScale import j
+from JumpScale.portal.portal import exceptions
+from JumpScale.grid.serverbase.Exceptions import RemoteException
 import urllib
 import types
 
@@ -25,23 +27,17 @@ class PortalRest():
                     # means is optional
                     ctx.params[key] = param['default']
                 else:
-                    ctx.start_response('400 Bad Request', [])
-                    message = 'Param with name:%s is missing.' % key
-                    return False, message
+                    raise exceptions.BadRequest('Param with name:%s is missing.' % key)
             elif param['type'] == 'int' and not isinstance(ctx.params[key], (int, types.NoneType)):
                 try:
                     ctx.params[key] = int(ctx.params[key])
                 except ValueError:
-                    ctx.start_response('400 Bad Request', [])
-                    msg = 'Value of param %s not correct needs to be of type %s' % (key, param['type'])
-                    return False, msg
+                    raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
             elif param['type'] == 'bool' and not isinstance(ctx.params[key], (bool, types.NoneType)):
                 try:
                     ctx.params[key] = j.basetype.boolean.fromString(ctx.params[key])
                 except ValueError:
-                    ctx.start_response('400 Bad Request', [])
-                    msg = 'Value of param %s not correct needs to be of type %s' % (key, param['type'])
-                    return False, msg
+                    raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
 
         return True, ""
 
@@ -167,6 +163,11 @@ class PortalRest():
             method = routes[routekey]['func']
             result = method(ctx=ctx, **ctx.params)
             return (True, result)
+        except RemoteException as error:
+            if error.eco.get('exceptionclassname') == 'KeyError':
+                data = error.eco['data'] or {'categoryname': 'unknown', 'key': '-1'}
+                raise exceptions.NotFound("Could not find %(key)s of type %(categoryname)s" % data)
+            raise
         except Exception as errorObject:
             eco = j.errorconditionhandler.parsePythonErrorObject(errorObject)
             msg = "Execute method %s failed." % (routekey)

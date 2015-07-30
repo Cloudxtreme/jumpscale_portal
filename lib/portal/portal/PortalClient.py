@@ -62,9 +62,7 @@ class PortalClient():
 
 
         if not hasattr(j, 'apps'):
-            j.apps = GroupAppsClass(self)
-        if isinstance(j.apps, GroupAppsClass):
-            self.actors = j.apps
+            j.apps = self.actors = GroupAppsClass(self)
         else:
             self.actors = GroupAppsClass(self)
 
