@@ -3,7 +3,7 @@ def main(j, args, params, tags, tasklet):
     def chunks(l, n):
         """ Yield successive n-sized chunks from l.
         """
-        for i in xrange(0, len(l), n):
+        for i in range(0, len(l), n):
             yield l[i:i+n]
 
     page = args.page
@@ -39,10 +39,10 @@ def main(j, args, params, tags, tasklet):
 
     amountcolumns = 0
 
-    for title, rows in columns.iteritems():
+    for title, rows in columns.items():
         if not isinstance(rows, dict):
             continue
-        chunkedrows = list(chunks(rows.items(), 12))
+        chunkedrows = list(chunks(list(rows.items()), 12))
         amountcolumns += len(chunkedrows)
         for idx, tenrow in enumerate(chunkedrows):
             items += '<li class="mega-menu-column" style="width: {colpercent}%; float: left; padding-left: 10px;">'

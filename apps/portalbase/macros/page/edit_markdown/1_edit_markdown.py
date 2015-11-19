@@ -1,18 +1,18 @@
 
 def main(j, args, params, tags, tasklet):
 
-    import urlparse
-    import urllib
+    import urllib.parse
+    import urllib.request, urllib.parse, urllib.error
     # import urllib.request, urllib.error
     
 
     querystr = args.requestContext.env['QUERY_STRING']
-    querytuples = urlparse.parse_qsl(querystr)
+    querytuples = urllib.parse.parse_qsl(querystr)
     for item in querytuples[:]:
         if item[0] in ['space', 'page']:
             querytuples.remove(item)
     spaceName = querystr.split('&')[0].split('=')[1]
-    querystr = urllib.urlencode(querytuples)
+    querystr = urllib.parse.urlencode(querytuples)
     page = args.page
     page.addCSS('/jslib/bootstrap/css/bootstrapmarkdown/bootstrap-markdown.min.css')
     page.addCSS(cssContent='''

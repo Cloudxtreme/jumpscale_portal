@@ -73,7 +73,7 @@ eg:
         popup = Popup(id=actionid, header="Confirm Action %s" % display, submit_url=actionurl, navigateback=navigateback, reload_on_success=reload, showresponse=showresponse)
         if inputs:
             for var in inputs:
-                if isinstance(var, basestring):
+                if isinstance(var, str):
                     popup.addText(var, var)
                 else:
                     if var['type'] in ('dropdown', 'radio'):
@@ -94,7 +94,7 @@ eg:
                     elif var['type'] == 'hidden':
                         popup.addHiddenField(var['name'], var['value'])
 
-        for name, value in data.items():
+        for name, value in list(data.items()):
             popup.addHiddenField(name, value)
 
         popup.write_html(page)

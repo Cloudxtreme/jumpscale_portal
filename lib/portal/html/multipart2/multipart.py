@@ -1,4 +1,4 @@
-from __future__ import with_statement, absolute_import, print_function
+
 
 from .six import (
     binary_type,
@@ -10,7 +10,7 @@ from .decoders import *
 from .exceptions import *
 
 try:
-    from urlparse import parse_qs
+    from urllib.parse import parse_qs
 except ImportError:
     from urllib.parse import parse_qs
 

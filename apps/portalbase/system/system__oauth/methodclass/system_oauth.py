@@ -1,4 +1,4 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import requests
 
 from JumpScale import j
@@ -40,7 +40,7 @@ class system_oauth(j.code.classGetBase()):
             session.delete()
             session.save()
             if oauth:
-                back_uri = urllib.urlencode({'redirect_uri': redirecturi})
+                back_uri = urllib.parse.urlencode({'redirect_uri': redirecturi})
                 location = str('%s?%s'% (oauth.get('logout_url'), back_uri))
                 ctx.start_response('302 Found', [('Location', location)])
             else:
@@ -65,7 +65,7 @@ class system_oauth(j.code.classGetBase()):
         cache_result = cache.get(state)
         
         if not cache_result:
-            unauthorized_redirect_url = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode({'type': j.core.portal.active.force_oauth_instance or 'github'}))
+            unauthorized_redirect_url = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.parse.urlencode({'type': j.core.portal.active.force_oauth_instance or 'github'}))
             msg = 'Not Authorized -- Invalid or expired state'
             j.logger.log(msg)
             ctx.start_response('302 Found', [('Location', unauthorized_redirect_url)])
@@ -85,7 +85,7 @@ class system_oauth(j.code.classGetBase()):
         result = result.json()
         access_token = result['access_token']
         params = {'access_token' : access_token}
-        userinfo = requests.get('%s?%s' % (client.user_info_url, urllib.urlencode(params))).json()
+        userinfo = requests.get('%s?%s' % (client.user_info_url, urllib.parse.urlencode(params))).json()
         username = userinfo['login']
         email = userinfo['email']
 

@@ -1072,7 +1072,7 @@ function copyText$id() {
                    'bodyattrib': ' '.join(self.bodyattributes),
                    'body': self.body,
                    'tail': '\n'.join(self.tail)}
-        for key, val in docdata.iteritems():
+        for key, val in docdata.items():
             docdata[key] = j.tools.text.toStr(val)
 
         return '''

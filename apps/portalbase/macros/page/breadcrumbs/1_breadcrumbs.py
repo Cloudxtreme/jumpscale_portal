@@ -1,5 +1,5 @@
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 def main(j, args, params, tags, tasklet):
     page = args.page
@@ -11,7 +11,7 @@ def main(j, args, params, tags, tasklet):
     space = j.core.portal.active.getSpace(doc.getSpaceName())
     if 'breadcrumbdata' in args.requestContext.params:
         for breadcrumb in args.requestContext.params['breadcrumbdata'][::-1]:
-            for name, link in breadcrumb.iteritems():
+            for name, link in breadcrumb.items():
                 breadcrumbs.insert(0, (link, name, {}))
     else:
         breadcrumbs.append((doc.original_name, doc.title, {}))
@@ -29,7 +29,7 @@ def main(j, args, params, tags, tasklet):
     breadcrumbs.insert(0, ('/%s' % space.model.id, space.model.name, {}))
     for link, title, args in breadcrumbs[:-1]:
         if args:
-            link = "%s?%s" % (link, urllib.urlencode(args))
+            link = "%s?%s" % (link, urllib.parse.urlencode(args))
         innerdata += "<li><a href='%s'>%s</a><span style='opacity: 0.5; margin-right: 8px; margin-left: 2px;' class='icon-chevron-right'></span></li>" % (link, title)
     innerdata += "<li class='active'>%s</li>" % breadcrumbs[-1][1]
 

@@ -1,7 +1,7 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
 from JumpScale.grid.serverbase.Exceptions import RemoteException
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import types
 
 class PortalRest():
@@ -21,19 +21,19 @@ class PortalRest():
 
         params = self.ws.routes[ctx.path]['params']
 
-        for key, param in params.iteritems():
+        for key, param in params.items():
             if key not in ctx.params:
                 if param['optional']:
                     # means is optional
                     ctx.params[key] = param['default']
                 else:
                     raise exceptions.BadRequest('Param with name:%s is missing.' % key)
-            elif param['type'] == 'int' and not isinstance(ctx.params[key], (int, types.NoneType)):
+            elif param['type'] == 'int' and not isinstance(ctx.params[key], (int, type(None))):
                 try:
                     ctx.params[key] = int(ctx.params[key])
                 except ValueError:
                     raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
-            elif param['type'] == 'bool' and not isinstance(ctx.params[key], (bool, types.NoneType)):
+            elif param['type'] == 'bool' and not isinstance(ctx.params[key], (bool, type(None))):
                 try:
                     ctx.params[key] = j.basetype.boolean.fromString(ctx.params[key])
                 except ValueError:
@@ -318,7 +318,7 @@ class PortalRest():
             obj = osiscl.new()
         if 'id' in fields:
             fields.pop('id')
-        for field, value in fields.iteritems():
+        for field, value in fields.items():
             setattr(obj, field, value)
         return osiscl.set(obj)
 
@@ -327,7 +327,7 @@ class PortalRest():
         if ctx.env['QUERY_STRING']:
             queryparts = ctx.env['QUERY_STRING'].split('&')
             for querypart in queryparts:
-                querypart = urllib.unquote(querypart)
+                querypart = urllib.parse.unquote(querypart)
                 field, value = querypart.split('=')
                 fields[field] = int(value) if value.isdigit() else value
         return fields

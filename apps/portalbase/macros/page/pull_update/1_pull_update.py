@@ -10,7 +10,7 @@ def main(j, args, params, tags, tasklet):
             space_path = os.path.abspath(space.model.path)
         j.system.process.execute('cd %s;git pull' % space_path)
         page.addMessage('Pulled and Updated')
-    except Exception, error:
+    except Exception as error:
         page.addMessage('Something went wrong with updating one more or more of the spaces')
 
     return params

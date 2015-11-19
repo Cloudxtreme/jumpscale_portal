@@ -1,4 +1,4 @@
-import urlparse
+import urllib.parse
 import collections
 import types
 import pprint
@@ -26,13 +26,13 @@ import time
 
 import mimeparse
 import mimetypes
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import cgi
 import JumpScale.grid.agentcontroller
-from PortalAuthenticatorGitlab import PortalAuthenticatorGitlab
-from PortalAuthenticatorMinimal import PortalAuthenticatorMinimal
-from PortalAuthenticatorOSIS import PortalAuthenticatorOSIS
-from PortalTemplate import PortalTemplate
+from .PortalAuthenticatorGitlab import PortalAuthenticatorGitlab
+from .PortalAuthenticatorMinimal import PortalAuthenticatorMinimal
+from .PortalAuthenticatorOSIS import PortalAuthenticatorOSIS
+from .PortalTemplate import PortalTemplate
 
 
 BLOCK_SIZE = 4096
@@ -49,10 +49,10 @@ def exhaustgenerator(func):
     def wrapper(self, env, start_response):
         try:
             result = func(self, env, start_response)
-        except exceptions.BaseError, e:
+        except exceptions.BaseError as e:
             start_response("%s %s" % (e.code, e.status), e.headers)
             return [e.msg]
-        if isinstance(result, basestring):
+        if isinstance(result, str):
             return [j.tools.text.toStr(result)]
         elif isinstance(result, collections.Iterable):
             def exhaust():
@@ -189,7 +189,7 @@ class PortalServer:
         self.getContentDirs()
 
         # load proxies
-        for _, proxy in self.hrd.getDictFromPrefix('instance.proxy').iteritems():
+        for _, proxy in self.hrd.getDictFromPrefix('instance.proxy').items():
             self.proxies[proxy['path']] = proxy
 
     def reset(self):
@@ -289,7 +289,7 @@ class PortalServer:
         Return Local Spaces (Non Gitlab Spaces) with guest permissions set to READ or higher
         """
         spaces = {}
-        localspaces = [x.model.id.lower() for x in self.spacesloader.spaces.values() if x not in gitlabspaces]
+        localspaces = [x.model.id.lower() for x in list(self.spacesloader.spaces.values()) if x not in gitlabspaces]
         for space in localspaces:
             rights = ''
             spaceobject = self.spacesloader.spaces.get(space)
@@ -312,7 +312,7 @@ class PortalServer:
 
         # In case of gitlab, we want to get the local osis spaces tha user has access to
         if self.authentication_method == 'gitlab':
-            spaces += self.getAccessibleLocalSpacesForGitlabUser(spaces).keys()
+            spaces += list(self.getAccessibleLocalSpacesForGitlabUser(spaces).keys())
 
         else:
             result = []
@@ -371,7 +371,7 @@ class PortalServer:
             return []
         username = ctx.env['beaker.session']["user"]
 
-        clonedspaces = set([s.model.id[s.model.id.index('portal_'):] for s in self.spacesloader.spaces.values() if 'portal_' in s.model.id])
+        clonedspaces = set([s.model.id[s.model.id.index('portal_'):] for s in list(self.spacesloader.spaces.values()) if 'portal_' in s.model.id])
         gitlabspaces = set([s[s.index('portal_'):] for s in self.auth.getUserSpaces(username, spaceloader=self.spacesloader)])
         return gitlabspaces.difference(clonedspaces)
 
@@ -486,7 +486,7 @@ class PortalServer:
                 if ctx.env['QUERY_STRING']:
                     redirect += "?%s" % ctx.env['QUERY_STRING']
                 queryparams = {'type':self.force_oauth_instance, 'redirect': redirect}
-                location = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode(queryparams))
+                location = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.parse.urlencode(queryparams))
                 raise exceptions.Redirect(location)
 
             name = "accessdenied" if loggedin else "login"
@@ -669,7 +669,7 @@ class PortalServer:
             params.pop('target', None)
         status, header, response = con.run(params)
         status = '%s' % status
-        headers = [ (k, v) for k,v in header.items() ]
+        headers = [ (k, v) for k,v in list(header.items()) ]
         ctx.start_response(status, headers)
         if 'download' not in params:
             response = j.db.serializers.getSerializerType('j').dumps(response)
@@ -682,7 +682,7 @@ class PortalServer:
         method = ctx.env['REQUEST_METHOD']
         query = ctx.env['QUERY_STRING']
         headers = {}
-        for name, value in ctx.env.iteritems():
+        for name, value in ctx.env.items():
             if name.startswith('HTTP_'):
                 headers[name[5:].replace('_', '-')] = value
         desturl = proxy['dest'] + path[len(proxy['path']):]
@@ -691,7 +691,7 @@ class PortalServer:
         req = requests.Request(method, desturl, data=ctx.env['wsgi.input'], headers=headers).prepare()
         session = requests.Session()
         resp = session.send(req, stream=True)
-        ctx.start_response('%s %s' % (resp.status_code, resp.reason), headers=resp.headers.items())
+        ctx.start_response('%s %s' % (resp.status_code, resp.reason), headers=list(resp.headers.items()))
         for chunk in resp.raw:
             yield chunk
 
@@ -778,7 +778,7 @@ class PortalServer:
             # result["error"]=eco.obj2dict()
             def todict(obj):
                 data = {}
-                for key, value in obj.__dict__.items():
+                for key, value in list(obj.__dict__.items()):
                     try:
                         data[key] = todict(value)
                     except AttributeError:
@@ -878,7 +878,7 @@ class PortalServer:
     def startSession(self, ctx, path):
         session = ctx.env['beaker.session']
         if 'user_login_' in ctx.params and ctx.params.get('user_login_') == 'guest' and  self.force_oauth_instance:
-            location = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode({'type':self.force_oauth_instance}))
+            location = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.parse.urlencode({'type':self.force_oauth_instance}))
             raise exceptions.Redirect(location)
 
         # Already logged in user can't access login page again
@@ -922,8 +922,8 @@ class PortalServer:
             session['user'] = 'guest'
             session.save()
             if oauth_logout_url:
-                backurl = urlparse.urljoin(ctx.env['HTTP_REFERER'], ctx.env['PATH_INFO'])
-                ctx.start_response('302 Found', [('Location', '%s?%s' % (str(oauth_logout_url), str(urllib.urlencode({'redirect_uri':backurl}))))])
+                backurl = urllib.parse.urljoin(ctx.env['HTTP_REFERER'], ctx.env['PATH_INFO'])
+                ctx.start_response('302 Found', [('Location', '%s?%s' % (str(oauth_logout_url), str(urllib.parse.urlencode({'redirect_uri':backurl}))))])
                 return False, session
             return True, session
 
@@ -969,7 +969,7 @@ class PortalServer:
         return True, session
 
     def _getParamsFromEnv(self, env, ctx):
-        params = urlparse.parse_qs(env["QUERY_STRING"], 1)
+        params = urllib.parse.parse_qs(env["QUERY_STRING"], 1)
         def simpleParams(params):
             # HTTP parameters can be repeated multiple times, i.e. in case of using <select multiple>
             # Example: a=1&b=2&a=3
@@ -1006,12 +1006,12 @@ class PortalServer:
                 postData = env["wsgi.input"].read()
                 if postData.strip() == "":
                     return params
-                params.update(dict(urlparse.parse_qs(postData, 1)))
+                params.update(dict(urllib.parse.parse_qs(postData, 1)))
                 return simpleParams(params)
             elif contentype.find("multipart/form-data") != -1 and env.get('HTTP_TRANSFER_ENCODING') != 'chunked':
                 forms, files = multipart.parse_form_data(ctx.env)
                 params.update(forms)
-                for key, value in files.items():
+                for key, value in list(files.items()):
                     params.setdefault(key, dict())[value.filename] = value.file
             elif env.get('HTTP_TRANSFER_ENCODING') == 'chunked':
                 from JumpScale.portal.html.multipart2.multipart import parse_options_header
@@ -1037,7 +1037,7 @@ class PortalServer:
         ctx.params = self._getParamsFromEnv(environ, ctx)
         ctx.env['JS_CTX'] = ctx
 
-        for proxypath, proxy in self.proxies.iteritems():
+        for proxypath, proxy in self.proxies.items():
             if path.startswith(proxypath.lstrip('/')):
                 return self.process_proxy(ctx, proxy)
 
@@ -1104,7 +1104,7 @@ class PortalServer:
             if not self.authentication_method:
                 try:
                     j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
-                except Exception, e:
+                except Exception as e:
                     raiseError(ctx, msg="You have a minimal portal with no OSIS configured", msginfo="", errorObject=None, httpcode="500 Internal Server Error")
             return self.rest.processor_restext(environ, start_response, path, human=False, ctx=ctx)
 
@@ -1251,21 +1251,21 @@ class PortalServer:
     def _minRepeat(self):
         while True:
             gevent.sleep(5)
-            for key in self.schedule1min.keys():
+            for key in list(self.schedule1min.keys()):
                 item, args, kwargs = self.schedule1min[key]
                 item(*args, **kwargs)
 
     def _15minRepeat(self):
         while True:
             gevent.sleep(60 * 15)
-            for key in self.schedule15min.keys():
+            for key in list(self.schedule15min.keys()):
                 item, args, kwargs = self.schedule15min[key]
                 item(*args, **kwargs)
 
     def _60minRepeat(self):
         while True:
             gevent.sleep(60 * 60)
-            for key in self.schedule60min.keys():
+            for key in list(self.schedule60min.keys()):
                 item, args, kwargs = self.schedule60min[key]
                 item(*args, **kwargs)
 
@@ -1372,7 +1372,7 @@ class PortalServer:
 
     def __str__(self):
         out=""
-        for key,val in self.__dict__.items():
+        for key,val in list(self.__dict__.items()):
             if key[0] != "_" and key not in ["routes"]:
                 out+="%-35s :  %s\n"%(key,val)
         routes=",".join(list(self.routes.keys()))

@@ -69,7 +69,7 @@ class system_gridmanager(j.code.classGetBase()):
 
         try:
             stats = client.listStatKeys('n%s.system.' % nid)
-        except Exception,e:
+        except Exception as e:
             # from IPython import embed
             # print "DEBUG NOW getNodeSystemStats"
             # embed()
@@ -137,7 +137,7 @@ class system_gridmanager(j.code.classGetBase()):
                 return False
             return True
 
-        return filter(myfilter, results)
+        return list(filter(myfilter, results))
 
     def getProcessStats(self, nid, domain="", name="", **kwargs):
         """
@@ -157,7 +157,7 @@ class system_gridmanager(j.code.classGetBase()):
     def _showUnavailable(self, width, height, message="STATS UNAVAILABLE"):
         import PIL.Image as Image
         import PIL.ImageDraw as ImageDraw
-        import StringIO
+        import io
 
         size = (int(width), int(height))
         im = Image.new('RGB', size, 'white') 
@@ -168,7 +168,7 @@ class system_gridmanager(j.code.classGetBase()):
         draw.text(text_pos, text, fill=red)
         
         del draw 
-        output = StringIO.StringIO()
+        output = io.StringIO()
         im.save(output, 'PNG')
         del im
         response = output.getvalue()
@@ -179,7 +179,7 @@ class system_gridmanager(j.code.classGetBase()):
         """
         @param statkey e.g. n1.disk.mbytes.read.sda1.last
         """
-        import urllib
+        import urllib.request, urllib.parse, urllib.error
         query = list()
         ctx = kwargs['ctx']
         ctx.start_response('200', (('content-type', 'image/png'),))
@@ -204,10 +204,10 @@ class system_gridmanager(j.code.classGetBase()):
 
         params = kwargs.copy()
         params.pop('ctx')
-        for key, value in params.iteritems():
+        for key, value in params.items():
             query.append((key, value))
 
-        querystr = urllib.urlencode(query)
+        querystr = urllib.parse.urlencode(query)
         url="http://127.0.0.1:8081/render?%s"%(querystr)
         r = requests.get(url)
         try:
@@ -413,13 +413,13 @@ class system_gridmanager(j.code.classGetBase()):
         res={}
         for js in self.osis_jumpscript.simpleSearch({'organization': organization}):
             key="%s:%s"%(js["organization"],js["name"])
-            if not res.has_key(key):
+            if key not in res:
                 res[key]=js
             if int(js["id"])>int(res[key]["id"]):
                 res[key]=js
 
         res2=[]
-        for key,val in res.iteritems():
+        for key,val in res.items():
             res2.append(val)
 
         return res2
@@ -447,7 +447,7 @@ class system_gridmanager(j.code.classGetBase()):
             # TODO nid?
             return True
 
-        return filter(myfilter, sessions)
+        return list(filter(myfilter, sessions))
 
     def _getEpoch(self, time):
         if not time:
@@ -619,7 +619,7 @@ class system_gridmanager(j.code.classGetBase()):
             return True
 
         results = self.osis_machine.simpleSearch(params)
-        return filter(myfilter, results)
+        return list(filter(myfilter, results))
 
     def getDisks(self, id=None, guid=None, gid=None, nid=None, fs=None, sizeFrom=None, sizeTo=None, freeFrom=None, \
                  freeTo=None, mounted=None, ssd=None, path=None, model=None, description=None, mountpoint=None, \

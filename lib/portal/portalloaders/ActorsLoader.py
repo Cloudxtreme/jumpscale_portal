@@ -130,7 +130,7 @@ class ActorsLoader(LoaderBase):
 
     def scan(self, path, reset=False):
         paths = path
-        if isinstance(paths, basestring):
+        if isinstance(paths, str):
             paths = [paths]
 
         for path in paths:

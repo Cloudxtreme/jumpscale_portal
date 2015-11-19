@@ -1,6 +1,6 @@
 
 from JumpScale import j
-from Page import Page
+from .Page import Page
 import copy
 try:
     import ujson as json
@@ -232,7 +232,7 @@ class PageRST(Page):
         # print "DEBUG NOW addDict (pagerst)"
         # embed()        
         if keystoshow == []:
-            keystoshow = dictobject.keys()
+            keystoshow = list(dictobject.keys())
         self.addMessage(description)
         arr = []
         for item in keystoshow:

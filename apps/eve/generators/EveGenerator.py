@@ -12,7 +12,7 @@ typemap = {'str': 'string',
 
 def generateDomain(spec):
     domain = dict()
-    for modelname, modelspec in spec.iteritems():
+    for modelname, modelspec in spec.items():
         domain[modelname] = generateModel(modelspec)
     return domain
 

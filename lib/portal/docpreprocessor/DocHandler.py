@@ -38,8 +38,8 @@ class DocHandler(FileSystemEventHandler):
 
     def reloadMacro(self, event):
         for macroexecute in (self.doc_processor.macroexecutorPreprocessor, self.doc_processor.macroexecutorWiki, self.doc_processor.macroexecutorPage):
-            for groupname, taskletenginegroup in macroexecute.taskletsgroup.items():
-                for group, taskletengine in taskletenginegroup.taskletEngines.items():
+            for groupname, taskletenginegroup in list(macroexecute.taskletsgroup.items()):
+                for group, taskletengine in list(taskletenginegroup.taskletEngines.items()):
                     for tasklet in taskletengine.tasklets:
                         if tasklet.path == event.src_path:
                             taskletengine.reloadTasklet(tasklet)

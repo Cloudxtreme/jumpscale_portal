@@ -49,7 +49,7 @@ class LoaderBase(object):
         path can be 1 path or list of paths
         """
         paths = path
-        if isinstance(path, basestring):
+        if isinstance(path, str):
             paths = [path]
 
         for path in paths:

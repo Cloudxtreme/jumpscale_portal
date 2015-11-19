@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
     if not menulinks:
         spacelinks = j.core.portal.active.getSpaceLinks(args.requestContext)
         menulinks = []
-        for name, url in spacelinks.iteritems():
+        for name, url in spacelinks.items():
             menulinks.append({'name': name, 'url': url, 'theme': 'light', 'external': 'false'})
 
     groups = j.core.portal.active.getGroupsFromCTX(args.requestContext)

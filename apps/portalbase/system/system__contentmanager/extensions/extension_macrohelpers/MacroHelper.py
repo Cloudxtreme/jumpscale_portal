@@ -34,7 +34,7 @@ class MacroHelper():
             params.result=("{{code:\n%s\n}}"%out,doc)
             return params
 
-        objparams = { str(k).lower(): v for k,v in obj.items() }
+        objparams = { str(k).lower(): v for k,v in list(obj.items()) }
 
         #apply the properties of the object as parameters to the active wiki document
         doc.content=doc.applyParams(objparams, content=doc.content)

@@ -44,7 +44,7 @@ class system_logs(j.code.classGetBase()):
                 roles = params.pop('roles')
                 query_string = {"query_string":{"default_field":"roles","query": roles}}
                 query['query']['bool']['must'].append(query_string)
-            for k, v in params.iteritems():
+            for k, v in params.items():
                 if v:
                     if k == 'state':
                         v = v.lower()

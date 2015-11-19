@@ -51,7 +51,7 @@ def render_page(path=''):
     # html_content = markdown(content)
     
     meta = markdown.Meta
-    meta = dict((k, v[0]) for k, v in meta.iteritems())
+    meta = dict((k, v[0]) for k, v in meta.items())
 
     template = meta.get('template', 'page.html')
 

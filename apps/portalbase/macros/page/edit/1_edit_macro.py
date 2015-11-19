@@ -1,14 +1,14 @@
 
 def main(j, args, params, tags, tasklet):
 
-    import urlparse
-    import urllib
+    import urllib.parse
+    import urllib.request, urllib.parse, urllib.error
     import re
 
     page = args.page
     page_match = re.search(r"page\s*:\s*([^:}]*)", args.macrostr)
     querystr = args.requestContext.env['QUERY_STRING']
-    querytuples = urlparse.parse_qsl(querystr)
+    querytuples = urllib.parse.parse_qsl(querystr)
     args = args.tags.getValues(app="", actor="", path="", bucket="", page="", space="", edit=False)
     spacename = ""
     for name, value in querytuples[:]:
@@ -20,7 +20,7 @@ def main(j, args, params, tags, tasklet):
                 spacename = value
             querytuples.remove((name, value))
 
-    querystr = urllib.urlencode(querytuples)
+    querystr = urllib.parse.urlencode(querytuples)
 
     page.addBootstrap()
     page_name = ''

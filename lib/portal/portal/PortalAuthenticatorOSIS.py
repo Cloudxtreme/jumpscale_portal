@@ -38,10 +38,10 @@ class PortalAuthenticatorOSIS(object):
     def createUser(self, username, password, email, groups, domain):
         user = self.osisuser.new()
         user.id = username
-        if isinstance(groups, basestring):
+        if isinstance(groups, str):
             groups = [groups]
         user.groups = groups
-        if isinstance(email, basestring):
+        if isinstance(email, str):
             email = [email]
         user.emails = email
         user.domain = domain
@@ -92,4 +92,4 @@ class PortalAuthenticatorOSIS(object):
 
     def getUserSpaces(self, username, **kwargs):
         spaceloader = kwargs['spaceloader']
-        return [ x.model.id.lower() for x in  spaceloader.spaces.values()]
+        return [ x.model.id.lower() for x in  list(spaceloader.spaces.values())]

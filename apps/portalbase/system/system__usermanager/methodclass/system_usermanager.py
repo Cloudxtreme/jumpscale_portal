@@ -77,7 +77,7 @@ class system_usermanager(j.code.classGetBase()):
             ctx.start_response('404 Not Found', [('Content-Type', 'text/plain')])
             return "User %s not found" % username
         if groups:
-            if isinstance(groups, basestring):
+            if isinstance(groups, str):
                 groups = [x.strip() for x in groups.split(',')]
             elif not isinstance(groups, list):
                 ctx.start_response('400 Bad Request', [('Content-Type', 'text/plain')])
@@ -85,7 +85,7 @@ class system_usermanager(j.code.classGetBase()):
         else:
             groups = []
         if emails:
-            if isinstance(emails, basestring):
+            if isinstance(emails, str):
                 emails = [x.strip() for x in emails.split(',')]
             elif not isinstance(emails, list):
                 ctx.start_resonpnse('400 Bad Request', [('Content-Type', 'text/plain')])
@@ -143,7 +143,7 @@ class system_usermanager(j.code.classGetBase()):
             raise exceptions.NotFound("Group with name %s does not exists" % name)
         else:
             group = groups[0]
-        if users and isinstance(users, basestring):
+        if users and isinstance(users, str):
             users = users.split(',')
         group['id'] = name
         group['domain'] = domain

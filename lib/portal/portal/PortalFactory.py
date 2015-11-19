@@ -72,7 +72,7 @@ class PortalFactory():
                 self.actors = dict()
                 try:
                     self.osis = j.clients.osis.getByInstance('main')
-                except Exception, e:
+                except Exception as e:
                     self.osis = None
                 self.epoch = time.time()
                 self.actorsloader = j.core.portalloader.getActorsLoader()

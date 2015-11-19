@@ -1,7 +1,7 @@
-import httplib
+import http.client
 import json
 
-codemapping = httplib.responses.copy()
+codemapping = http.client.responses.copy()
 codemapping[419] = 'Authentication Timeout'
 
 
