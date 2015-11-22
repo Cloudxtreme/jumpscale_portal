@@ -61,7 +61,7 @@ class MongoEngineGenerator():
     def generate(self,spec):
         out="from mongoengine import *\n\n"
         out+="classes=[]\n"
-        for modelname in spec.keys():
+        for modelname in list(spec.keys()):
             spec2=spec[modelname]
             out="%s%s\n"%(out,self.generateModel(modelname,spec2))
 
@@ -79,7 +79,7 @@ class MongoEngineGenerator():
             else:
                 help_str=""
             tags=propspec["tags"]
-            if tags<>None and tags<>'':
+            if tags!=None and tags!='':
                 pass
                 #need to insert code for references
                 
@@ -105,7 +105,7 @@ class MongoEngineGenerator():
                     ttypestr="BooleanField"
                 else:
                     from IPython import embed
-                    print "DEBUG NOW unknown in MongoEngineGenerator type2typestr"
+                    print("DEBUG NOW unknown in MongoEngineGenerator type2typestr")
                     embed()
                     p                    
                 return ttypestr

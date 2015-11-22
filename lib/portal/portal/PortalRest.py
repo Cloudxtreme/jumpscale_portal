@@ -21,7 +21,7 @@ class PortalRest():
 
         params = self.ws.routes[ctx.path]['params']
 
-        for key, param in params.items():
+        for key, param in list(params.items()):
             if key not in ctx.params:
                 if param['optional']:
                     # means is optional
@@ -318,7 +318,7 @@ class PortalRest():
             obj = osiscl.new()
         if 'id' in fields:
             fields.pop('id')
-        for field, value in fields.items():
+        for field, value in list(fields.items()):
             setattr(obj, field, value)
         return osiscl.set(obj)
 

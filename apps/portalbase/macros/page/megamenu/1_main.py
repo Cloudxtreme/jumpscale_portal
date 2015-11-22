@@ -39,7 +39,7 @@ def main(j, args, params, tags, tasklet):
 
     amountcolumns = 0
 
-    for title, rows in columns.items():
+    for title, rows in list(columns.items()):
         if not isinstance(rows, dict):
             continue
         chunkedrows = list(chunks(list(rows.items()), 12))

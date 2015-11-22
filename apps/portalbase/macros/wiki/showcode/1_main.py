@@ -5,7 +5,7 @@ def main(j, args, params, tags, tasklet):
     codepaths = dict()
 
     actors = j.core.portal.active.actorsloader.actors
-    for actorname, info in actors.iteritems():
+    for actorname, info in list(actors.items()):
         if j.system.fs.exists(info.model.path):
             parent = j.system.fs.getParent(info.model.path)
             parent = parent.replace(j.dirs.baseDir, '$base')
@@ -18,7 +18,7 @@ def main(j, args, params, tags, tasklet):
 
     result = list()
     result.append('''{{html: <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">}}''')
-    for path, title in codepaths.iteritems():
+    for path, title in list(codepaths.items()):
         sectionid = 'collapse_%s' % title.replace(' ', '_')
         headingid = 'heading_%s' % title
         result.append("""{{html:
@@ -45,8 +45,6 @@ def main(j, args, params, tags, tasklet):
         </div>
         }}""")
     result = '\n'.join(result)
-    # result = 'test'
-    print result
 
     params.result = (result, params.doc)
     return params

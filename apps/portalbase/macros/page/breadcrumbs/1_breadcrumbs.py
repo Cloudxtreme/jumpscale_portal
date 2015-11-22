@@ -11,7 +11,7 @@ def main(j, args, params, tags, tasklet):
     space = j.core.portal.active.getSpace(doc.getSpaceName())
     if 'breadcrumbdata' in args.requestContext.params:
         for breadcrumb in args.requestContext.params['breadcrumbdata'][::-1]:
-            for name, link in breadcrumb.items():
+            for name, link in list(breadcrumb.items()):
                 breadcrumbs.insert(0, (link, name, {}))
     else:
         breadcrumbs.append((doc.original_name, doc.title, {}))

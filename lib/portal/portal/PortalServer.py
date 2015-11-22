@@ -189,7 +189,7 @@ class PortalServer:
         self.getContentDirs()
 
         # load proxies
-        for _, proxy in self.hrd.getDictFromPrefix('instance.proxy').items():
+        for _, proxy in list(self.hrd.getDictFromPrefix('instance.proxy').items()):
             self.proxies[proxy['path']] = proxy
 
     def reset(self):
@@ -682,7 +682,7 @@ class PortalServer:
         method = ctx.env['REQUEST_METHOD']
         query = ctx.env['QUERY_STRING']
         headers = {}
-        for name, value in ctx.env.items():
+        for name, value in list(ctx.env.items()):
             if name.startswith('HTTP_'):
                 headers[name[5:].replace('_', '-')] = value
         desturl = proxy['dest'] + path[len(proxy['path']):]
@@ -1037,7 +1037,7 @@ class PortalServer:
         ctx.params = self._getParamsFromEnv(environ, ctx)
         ctx.env['JS_CTX'] = ctx
 
-        for proxypath, proxy in self.proxies.items():
+        for proxypath, proxy in list(self.proxies.items()):
             if path.startswith(proxypath.lstrip('/')):
                 return self.process_proxy(ctx, proxy)
 

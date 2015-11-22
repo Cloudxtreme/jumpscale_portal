@@ -55,9 +55,9 @@ def run(port=5000, mongo_host='localhost', mongo_port=27017, pagination_limit=10
     
         apps['/%s' % namespace] = app 
     
-    print "visit:\nhttp://localhost:%s/docs/" % port
+    print("visit:\nhttp://localhost:%s/docs/" % port)
     if apps:
-        firstapp = apps.values()[0]
+        firstapp = list(apps.values())[0]
         application = DispatcherMiddleware(firstapp, apps)
     # let's roll
         run_simple('0.0.0.0', port, application, use_reloader=False)

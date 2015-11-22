@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
 
     filters = dict()
 
-    for tag, val in args.tags.tags.items():
+    for tag, val in list(args.tags.tags.items()):
         val = args.getTag(tag)
         if tag == 'userdetails':
             userdetails = val

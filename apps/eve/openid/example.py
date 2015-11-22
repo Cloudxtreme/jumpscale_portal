@@ -58,13 +58,13 @@ class UserManagerHRD():
             email=self.users[key]["email"]
 
             if userinit:
-                for groupname,members in self.groups.iteritems():
+                for groupname,members in self.groups.items():
                     if email not in members:
                         #lets check if it matches one of the domain searches
                         for member in members:
                             if member.startswith("*"):
                                 membersearch=member.strip("* ")
-                                if email.find(membersearch)<>-1:
+                                if email.find(membersearch)!=-1:
                                     #found user in domain
                                     self.setGroupMember(groupname,[email])
                                             
@@ -97,7 +97,7 @@ class UserManagerHRD():
             self.hrd.listAdd("group.%s.members"%group,member)
 
     def loggedIn(self,openid):
-        return self.openidToUserId.has_key(openid)
+        return openid in self.openidToUserId
         
 
 usermanager=UserManagerHRD()
@@ -106,9 +106,9 @@ usermanager.setGroupMember("admin",["*@incubaid.com"])
 @app.before_request
 def before_request():
     g.user = None
-    if 'openid' in session and usermanager.openidToUserId.has_key(session['openid']):
+    if 'openid' in session and session['openid'] in usermanager.openidToUserId:
         g.user=usermanager.openidToUserId[session['openid']]
-        print "user found"
+        print('user found')
 
 @app.after_request
 def after_request(response):    
@@ -116,7 +116,7 @@ def after_request(response):
 
 @app.route('/')
 def index():
-    print "index"
+    print('index')
     return render_template('index.html')
 
 
@@ -153,9 +153,9 @@ def create_or_login(resp):
         session['auth_time'] = pape_resp.auth_time
 
     # user = User.query.filter_by(openid=resp.identity_url).first()
-    if usermanager.openidToUserId.has_key(resp.identity_url):
-        flash(u'Successfully signed in')
-        print "Successfully signed in"
+    if resp.identity_url in usermanager.openidToUserId:
+        flash('Successfully signed in')
+        print('Successfully signed in')
         g.user=usermanager.openidToUserId[resp.identity_url]
         return redirect(oid.get_next_url())
 
@@ -169,12 +169,12 @@ def create_or_login(resp):
     usermanager.setUser(name=resp.fullname, email=resp.email, openid=resp.identity_url)
 
     from IPython import embed
-    print "DEBUG NOW oooo"
+    print('DEBUG NOW oooo')
     embed()
     
 
-    if usermanager.openidToUserId.has_key(resp.identity_url):
-        flash(u'Successfully signed in')
+    if resp.identity_url in usermanager.openidToUserId:
+        flash('Successfully signed in')
         userid=usermanager.openidToUserId[resp.identity_url]
         g.user=usermanager.users[userid]
         return redirect(oid.get_next_url())
@@ -235,7 +235,7 @@ def create_or_login(resp):
 @app.route('/logout')
 def logout():
     session.pop('openid', None)
-    flash(u'You have been signed out')
+    flash('You have been signed out')
     return redirect(oid.get_next_url())
 
 

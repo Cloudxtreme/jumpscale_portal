@@ -204,7 +204,7 @@ class system_gridmanager(j.code.classGetBase()):
 
         params = kwargs.copy()
         params.pop('ctx')
-        for key, value in params.items():
+        for key, value in list(params.items()):
             query.append((key, value))
 
         querystr = urllib.parse.urlencode(query)
@@ -419,7 +419,7 @@ class system_gridmanager(j.code.classGetBase()):
                 res[key]=js
 
         res2=[]
-        for key,val in res.items():
+        for key,val in list(res.items()):
             res2.append(val)
 
         return res2

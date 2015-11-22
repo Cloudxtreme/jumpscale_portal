@@ -35,7 +35,7 @@ class system_errorconditionhandler(j.code.classGetBase()):
             eco.category + eco.description + eco.tags +\
             eco.descriptionpub
         key = j.base.byteprocessor.hashMd5(key)
-        print "ecokey:%s" % key
+        print ('ecokey:%s' % key)
         return key
 
     def processECO(self, eco):

@@ -36,7 +36,7 @@ def main(j, args, params, tags, tasklet):
         excludes=params.tags.tagGet("exclude").split(",")
         excludes=[item.strip().lower() for item in excludes]
 
-    for spaceid, name in sorted(iter(spaces.items()), key=lambda x:x[1]):
+    for spaceid, name in sorted(iter(list(spaces.items())), key=lambda x:x[1]):
         spaceid = spaceid.lower()
         if  spaceid not in excludes:
             anchor = spaceid.strip("/")

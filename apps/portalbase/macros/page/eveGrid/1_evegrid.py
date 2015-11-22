@@ -20,12 +20,12 @@ def main(j, args, params, tags, tasklet):
 
     hrd_data = hrd.getDictFromPrefix('column')
 
-    for _,columndata in hrd_data.iteritems():
+    for _,columndata in list(hrd_data.items()):
         column = {}
         column['data'] = columndata.get('data', '')
         column['header'] = columndata.get('header', '')
         column['format'] = columndata.get('format', '')
-        print '****', column
+        print('**** %s' % column)
         eveGrid['columns'].append(column)
 
     eveGrid['columns'] = (json.dumps(eveGrid['columns'])) or []
