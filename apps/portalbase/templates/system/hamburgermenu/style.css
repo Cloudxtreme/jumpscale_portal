@@ -20,6 +20,9 @@ html, body {
 .slider-container.visible #PortalsHamburgerMenu span::after{
     background: #fff;
 }
+.slider-container.visible #PortalsHamburgerMenu{
+    position: fixed !important;
+}
 #PortalsHamburgerMenu.dark span,
 #PortalsHamburgerMenu.dark span::before,
 #PortalsHamburgerMenu.dark span::after{
