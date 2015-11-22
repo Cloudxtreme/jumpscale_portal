@@ -5,7 +5,7 @@ from eve import Eve
 from eve.render import send_response
 
 from flask.ext.bootstrap import Bootstrap
-from eve_docs import eve_docs
+# from eve_docs import eve_docs
 from eve_docs.config import get_cfg
 from generators.EveGenerator import generateDomain
 from werkzeug.wsgi import DispatcherMiddleware

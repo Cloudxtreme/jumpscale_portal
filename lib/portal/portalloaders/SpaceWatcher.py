@@ -19,7 +19,7 @@ class SpaceWatcher():
         self.contentdir = contentdir if contentdir.endswith('/') else '%s/' % contentdir
         
         if not j.system.fs.exists(contentdir):
-            print "Contentdir %s was not found .. creating it." % contentdir
+            print("Contentdir %s was not found .. creating it." % contentdir)
             j.system.fs.createDir(contentdir)
 
         if contentdir.strip():
