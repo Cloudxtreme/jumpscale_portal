@@ -1,8 +1,8 @@
 def main(j, args, params, tags, tasklet):
     guid = args.getTag('guid')
     if not guid:
-        out = 'Missing GUID'
-        params.result = (out, args.doc)
+        args.doc.applyTemplate({})
+        params.result = (args.doc, args.doc)
         return params
 
     group = j.apps.system.usermanager.modelGroup.get(guid)
