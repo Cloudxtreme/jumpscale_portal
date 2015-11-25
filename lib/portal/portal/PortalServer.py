@@ -1149,7 +1149,7 @@ class PortalServer:
             space, pagename = self.path2spacePagename(path)
             self.log(ctx, user, path, space, pagename)
             pagestring = str(self.returnDoc(ctx, start_response, space, pagename, {}))
-            return [pagestring]
+            return [pagestring.encode()]
 
     def render(self, environ, start_response):
         path = environ["PATH_INFO"].lstrip("/")
